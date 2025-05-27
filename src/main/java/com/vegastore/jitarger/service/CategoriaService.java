@@ -11,7 +11,7 @@ public interface CategoriaService {
     List<CategoriaDTO> obtenerCategorias();
     CategoriaDTO obtenerCategoriaPorId(long id);
     CategoriaDTO obtenerCategoriaPorProducto(long idProducto);
-    long crearCategoria(CreateCategoriaDTO categoriaDTO);
+    CategoriaDTO crearCategoria(CreateCategoriaDTO categoriaDTO);
     void actualizarCategoria(long id, UpdateCategoriaDTO categoriaDTO);
     void borrarCategoria(long id);
     boolean existeCategoria(long id);

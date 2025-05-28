@@ -23,12 +23,8 @@ import com.vegastore.jitarger.service.CategoriaService;
 @Service
 public class CategoriaServiceImpl implements CategoriaService {
 
-    private final JdbcTemplate jdbcTemplate;
-
     @Autowired
-    public CategoriaServiceImpl(JdbcTemplate jdbcTemplate) {
-        this.jdbcTemplate = jdbcTemplate;
-    }
+    private JdbcTemplate jdbcTemplate;
 
     private final RowMapper<CategoriaDTO> categoriaRowMapper = (rs, rowNum) -> CategoriaDTO.builder()
             .id(rs.getLong("id"))

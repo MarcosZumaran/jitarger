@@ -57,8 +57,8 @@ public class DetallePedidoModel {
     @Schema(description = "Precio unitario del detalle del pedido")
     private BigDecimal precioUnitario;
 
-    @Column(name = "precio_total", precision = 10, scale = 2)
-    @Schema(description = "Precio total del detalle del pedido")
+    @Column(name = "subtotal", precision = 10, scale = 2)
+    @Schema(description = "Precio subtotal del detalle del pedido")
     private BigDecimal subTotal;
 
     @Column(name = "nombre_producto", length = 50, nullable = false)

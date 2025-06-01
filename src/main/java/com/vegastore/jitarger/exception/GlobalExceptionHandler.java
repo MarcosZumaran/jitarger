@@ -14,6 +14,8 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import com.vegastore.jitarger.responce.ApiResponse;
 
+import jakarta.validation.ConstraintViolationException;
+
 import java.util.HashMap;
 import java.util.Map;
 
@@ -104,5 +106,21 @@ public class GlobalExceptionHandler {
         logger.warn("Recurso duplicado: {}", ex.getMessage());
         return new ResponseEntity<>(ApiResponse.error(ex.getMessage()), HttpStatus.CONFLICT);
     }
+
+    @ExceptionHandler(ConstraintViolationException.class)
+    public ResponseEntity<ApiResponse<Map<String, String>>> handleConstraintViolation(ConstraintViolationException ex) { 
+        Map<String, String> errors = new HashMap<>();
+        ex.getConstraintViolations().forEach(violation -> {
+            String field = violation.getPropertyPath().toString();
+            String message = violation.getMessage();
+            errors.put(field, message);
+        });
+        logger.warn("Error de restricción: {}", ex.getMessage());
+        return new ResponseEntity<ApiResponse<Map<String, String>>>(
+            ApiResponse.validationError("Error de restricción", errors),
+            HttpStatus.BAD_REQUEST
+        );
+    }
+
 
 }

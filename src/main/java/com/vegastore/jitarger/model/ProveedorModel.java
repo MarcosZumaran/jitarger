@@ -62,7 +62,7 @@ public class ProveedorModel {
 
     // Listas de relaciones
 
-    @OneToMany(mappedBy = "idProveedor", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "proveedor", fetch = FetchType.LAZY)
     @Schema(description = "Lista de lotes del proveedor")
     private List<LoteModel> lotes;
 

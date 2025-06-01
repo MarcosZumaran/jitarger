@@ -2,6 +2,8 @@ package com.vegastore.jitarger.implement;
 
 import java.sql.PreparedStatement;
 import java.sql.Statement;
+import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Objects;
 
@@ -83,13 +85,14 @@ public class CategoriaServiceImpl implements CategoriaService {
     @Override
     @Transactional
     public CategoriaDTO crearCategoria(CreateCategoriaDTO categoria) {
-        String sql = "INSERT INTO categoria (nombre, descripcion) VALUES (?, ?)";
+        String sql = "INSERT INTO categoria (nombre, descripcion, fecha_registro) VALUES (?, ?, ?)";
         KeyHolder keyHolder = new GeneratedKeyHolder();
-        
+
         jdbcTemplate.update(connection -> {
             PreparedStatement ps = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
             ps.setString(1, categoria.getNombre());
             ps.setString(2, categoria.getDescripcion());
+            ps.setTimestamp(3, Timestamp.valueOf(LocalDateTime.now()));
             return ps;
         }, keyHolder);
         
@@ -99,6 +102,7 @@ public class CategoriaServiceImpl implements CategoriaService {
                 .id(id)
                 .nombre(categoria.getNombre())
                 .descripcion(categoria.getDescripcion())
+                .fechaRegistro(LocalDateTime.now())
                 .build();
     }
 
@@ -127,9 +131,17 @@ public class CategoriaServiceImpl implements CategoriaService {
     @Override
     @Transactional(readOnly = true)
     public boolean existeCategoria(long id) {
-        String sql = "SELECT COUNT(*) FROM categoria WHERE id = ?";
+        String sql = "SELECT COUNT(id) FROM categoria WHERE id = ?";
         Integer count = jdbcTemplate.queryForObject(sql, Integer.class, id);
         return count != null && count > 0;
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public int contarCategorias() {
+        String sql = "SELECT COUNT(id) FROM categoria";
+        Integer count = jdbcTemplate.queryForObject(sql, Integer.class);
+        return count != null ? count : 0;
     }
     
 }

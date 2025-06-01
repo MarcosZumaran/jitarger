@@ -29,7 +29,7 @@ public class PedidoDTO {
 
     @Positive(message = "El fecha de creación del pedido no puede ser negativa")
     @Schema(description = "Fecha de creación del pedido", example = "2023-05-01T00:00:00")
-    private String fechaRegistro;
+    private LocalDateTime fechaRegistro;
 
     @Positive(message = "El estado del pedido no puede ser negativo")
     @Schema(description = "Estado del pedido", example = "1")

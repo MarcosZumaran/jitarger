@@ -33,7 +33,7 @@ public class SubCategoriaModel {
 
     @ManyToOne
     @JoinColumn(name = "id_categoria")
-    private CategoriaModel idCategoria;
+    private CategoriaModel categoria;
 
     @Column(name = "nombre", length = 50, nullable = false)
     @Schema(description = "Nombre de la subcategoria")
@@ -52,11 +52,11 @@ public class SubCategoriaModel {
     // Constructor personalizado para la creación de objetos de la tabla subcategoria
 
     public SubCategoriaModel(
-        CategoriaModel idCategoria,
+        CategoriaModel categoria,
         String nombre, 
         String descripcion
         ) {
-        this.idCategoria = idCategoria;
+        this.categoria = categoria;
         this.nombre = nombre;
         this.descripcion = descripcion;
     }

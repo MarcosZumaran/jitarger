@@ -39,7 +39,7 @@ public class PedidoModel {
     @ManyToOne
     @JoinColumn(name = "id_usuario")
     @Schema(description = "Identificador del cliente")
-    private UsuarioModel idUsuario;
+    private UsuarioModel usuario;
 
     @Column(name = "fecha_registro")
     @Schema(description = "Fecha de creación del pedido")
@@ -101,7 +101,7 @@ public class PedidoModel {
     // Constructor personalizado para la creación de objetos de la tabla pedido
 
     public PedidoModel(
-        UsuarioModel idUsuario, 
+        UsuarioModel usuario, 
         LocalDateTime fechaRegistro, 
         String estado, 
         BigDecimal total,
@@ -115,7 +115,7 @@ public class PedidoModel {
         boolean cancelado,
         LocalDateTime fechaCancelacion
         ) {
-        this.idUsuario = idUsuario;
+        this.usuario = usuario;
         this.fechaRegistro = fechaRegistro;
         this.estado = estado;
         this.total = total;

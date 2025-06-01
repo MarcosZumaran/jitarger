@@ -36,7 +36,7 @@ public class ItemCarritoModel {
     @ManyToOne
     @JoinColumn(name = "id_carrito")
     @Schema(description = "Identificador del carrito")
-    private CarritoModel idCarrito;
+    private CarritoModel carrito;
 
     // Foreign key
     @ManyToOne
@@ -71,7 +71,7 @@ public class ItemCarritoModel {
     // Constructor personalizado para la creación de objetos de la tabla item_carrito
 
     public ItemCarritoModel( 
-        CarritoModel idCarrito, 
+        CarritoModel carrito, 
         ProductoPresentacionModel idProductoPresentacion,
         BigDecimal cantidad, 
         LocalDateTime fechaAgregado, 
@@ -80,7 +80,7 @@ public class ItemCarritoModel {
         String unidadmedidaPresentacion,
         boolean activo
         ) {  
-        this.idCarrito = idCarrito;
+        this.carrito = carrito;
         this.idProductoPresentacion = idProductoPresentacion;
         this.cantidad = cantidad;
         this.fechaAgregado = fechaAgregado;

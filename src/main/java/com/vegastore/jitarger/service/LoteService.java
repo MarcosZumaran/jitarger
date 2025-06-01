@@ -12,7 +12,7 @@ public interface LoteService {
     List<LoteDTO> obtenerLotesPorProducto(long idProducto);
     List<LoteDTO> obtenerLotesPorProveedor(long idProveedor);
     LoteDTO obtenerLotePorId(long id);
-    long crearLote(CreateLoteDTO loteDTO);
+    LoteDTO crearLote(CreateLoteDTO loteDTO);
     void actualizarLote(long id, UpdateLoteDTO loteDTO);
     void borrarLote(long id);
     boolean existeLote(long id);

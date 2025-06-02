@@ -4,6 +4,8 @@ import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
@@ -15,6 +17,8 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
+import jakarta.persistence.PrePersist;
+import jakarta.persistence.PreUpdate;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -39,15 +43,11 @@ public class PedidoModel {
     @ManyToOne
     @JoinColumn(name = "id_usuario")
     @Schema(description = "Identificador del cliente")
-    private UsuarioModel idUsuario;
+    private UsuarioModel usuario;
 
     @Column(name = "fecha_registro")
     @Schema(description = "Fecha de creación del pedido")
     private LocalDateTime fechaRegistro;
-
-    @Column(name = "estado", length = 50, nullable = false)
-    @Schema(description = "Estado del pedido")
-    private String estado;
 
     @Column(name = "total", precision = 10, scale = 2)
     @Schema(description = "Total del pedido")
@@ -57,11 +57,7 @@ public class PedidoModel {
     @Schema(description = "Subtotal del pedido")
     private BigDecimal subtotal;
 
-    @Column(name = "descuento", precision = 10, scale = 2, nullable = true)
-    @Schema(description = "Descuento del pedido")
-    private BigDecimal descuento;
-
-    @Column(name = "iva", precision = 10, scale = 2, nullable = true)
+    @Column(name = "impuestos", precision = 10, scale = 2, nullable = true)
     @Schema(description = "impuestos del pedido")
     private BigDecimal impuestos;
 
@@ -73,61 +69,53 @@ public class PedidoModel {
     @Schema(description = "Direccion de entrega del pedido")
     private String direccionEntrega;
 
-    @Column(name = "fecha_confirmacion")
-    @Schema(description = "Fecha de confirmacion del pedido")
-    private LocalDateTime fechaConfirmacion;
-
     @Column(name = "fecha_entrega")
     @Schema(description = "Fecha de entrega del pedido")
     private LocalDateTime fechaEntrega;
 
-    @Column(name = "cancelado", nullable = false)
-    @Schema(description = "Cancelado del pedido")
-    private boolean cancelado;
+    @Column(name = "estado", length = 50, nullable = false)
+    @Schema(description = "Estado del pedido, puede ser 'PENDIENTE', 'ENVIADO', 'ENTREGADO', 'CANCELADO'")
+    private String estado;
 
-    @Column(name = "fecha_cancelacion")
-    @Schema(description = "Fecha de cancelacion del pedido")
-    private LocalDateTime fechaCancelacion;
+    @Column(name = "fecha_actualizacion")
+    @Schema(description = "Fecha de actualización del pedido")
+    private LocalDateTime fechaActualizacion;
 
     // Listas de relaciones
-    @OneToMany(mappedBy = "idPedido", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "pedido", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @JsonIgnore
     @Schema(description = "Lista de detalles del pedido")
     private List<DetallePedidoModel> detalles;
 
-    @OneToMany(mappedBy = "idPedido", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "pedido", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @JsonIgnore
     @Schema(description = "Lista de historiales del pedido")
     private List<HistorialPedidoModel> historiales;
 
     // Constructor personalizado para la creación de objetos de la tabla pedido
 
-    public PedidoModel(
-        UsuarioModel idUsuario, 
-        LocalDateTime fechaRegistro, 
-        String estado, 
-        BigDecimal total,
-        BigDecimal subtotal, 
-        BigDecimal descuento, 
-        BigDecimal impuestos, 
-        String metodoPago, 
-        String direccionEntrega,
-        LocalDateTime fechaConfirmacion, 
-        LocalDateTime fechaEntrega, 
-        boolean cancelado,
-        LocalDateTime fechaCancelacion
-        ) {
-        this.idUsuario = idUsuario;
-        this.fechaRegistro = fechaRegistro;
-        this.estado = estado;
+    public PedidoModel(UsuarioModel usuario, BigDecimal total, BigDecimal subtotal, BigDecimal impuestos, String metodoPago, String direccionEntrega) {
+        this.usuario = usuario;
         this.total = total;
         this.subtotal = subtotal;
-        this.descuento = descuento;
         this.impuestos = impuestos;
         this.metodoPago = metodoPago;
         this.direccionEntrega = direccionEntrega;
-        this.fechaConfirmacion = fechaConfirmacion;
-        this.fechaEntrega = fechaEntrega;
-        this.cancelado = cancelado;
-        this.fechaCancelacion = fechaCancelacion;
+        this.fechaRegistro = LocalDateTime.now();
+        this.fechaActualizacion = LocalDateTime.now();
+        this.estado = "PENDIENTE"; // Por defecto, el estado del pedido es PENDIENTE al crearlo
+    }
+
+    @PrePersist
+    public void prePersist() {
+        this.fechaRegistro = LocalDateTime.now();
+        this.fechaActualizacion = LocalDateTime.now();
+        this.estado = "PENDIENTE"; // Por defecto, el estado del pedido es PENDIENTE al crearlo
+    }
+
+    @PreUpdate
+    public void preUpdate() {
+        this.fechaActualizacion = LocalDateTime.now();
     }
 
 }

@@ -8,6 +8,8 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
+import jakarta.persistence.PrePersist;
+import jakarta.persistence.PreUpdate;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.Pattern;
@@ -59,29 +61,43 @@ public class ProveedorModel {
     @Schema(description = "Fecha de creación del proveedor")
     private LocalDateTime fechaRegistro;
 
+    @Column(name = "fecha_actualizacion")
+    @Schema(description = "Fecha de actualización del proveedor")
+    private LocalDateTime fechaActualizacion;
 
-    // Listas de relaciones
+    @Column(name = "activo", nullable = false)
+    @Schema(description = "Estado del proveedor, true si está activo, false si está inactivo")
+    private boolean activo;
 
-    @OneToMany(mappedBy = "idProveedor", fetch = FetchType.LAZY)
+    // --- Listas de relaciones ---
+
+    @OneToMany(mappedBy = "proveedor", fetch = FetchType.LAZY)
     @Schema(description = "Lista de lotes del proveedor")
     private List<LoteModel> lotes;
 
     // Constructor personalizado para la creación de objetos de la tabla proveedor
 
-    public ProveedorModel(
-        String nombreEmpresa, 
-        String ruc, 
-        String direccion, 
-        String telefono, 
-        String correo, 
-        LocalDateTime fechaRegistro
-        ) {
+    public ProveedorModel(String nombreEmpresa, String ruc, String direccion, String telefono, String correo) {
         this.nombreEmpresa = nombreEmpresa;
         this.ruc = ruc;
         this.direccion = direccion;
         this.telefono = telefono;
         this.correo = correo;
-        this.fechaRegistro = fechaRegistro;
+        this.fechaRegistro = LocalDateTime.now();
+        this.fechaActualizacion = LocalDateTime.now();
+        this.activo = true; // Por defecto, el proveedor está activo al crearlo
     }
-    
+
+    @PrePersist
+    public void prePersist() {
+        this.fechaRegistro = LocalDateTime.now();
+        this.fechaActualizacion = LocalDateTime.now();
+        this.activo = true; // Por defecto, el proveedor está activo al crearlo
+    }
+
+    @PreUpdate
+    public void preUpdate() {
+        this.fechaActualizacion = LocalDateTime.now();
+    }
+
 }

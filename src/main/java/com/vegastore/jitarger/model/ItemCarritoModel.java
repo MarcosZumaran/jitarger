@@ -11,6 +11,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.PrePersist;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -36,13 +37,19 @@ public class ItemCarritoModel {
     @ManyToOne
     @JoinColumn(name = "id_carrito")
     @Schema(description = "Identificador del carrito")
-    private CarritoModel idCarrito;
+    private CarritoModel carrito;
 
     // Foreign key
     @ManyToOne
     @JoinColumn(name = "id_producto_presentacion")
     @Schema(description = "Identificador del producto")
-    private ProductoPresentacionModel idProductoPresentacion;
+    private ProductoPresentacionModel productoPresentacion;
+
+    // Foreign key
+    @ManyToOne
+    @JoinColumn(name = "id_producto_imagen")
+    @Schema(description = "Identificador de la imagen del producto, para mostrarlo en el carrito")
+    private ProductoImagenModel productoImagen;
 
     @Column(name = "cantidad", precision = 10, scale = 3)
     @Schema(description = "Cantidad del item del carrito")
@@ -70,24 +77,22 @@ public class ItemCarritoModel {
 
     // Constructor personalizado para la creación de objetos de la tabla item_carrito
 
-    public ItemCarritoModel( 
-        CarritoModel idCarrito, 
-        ProductoPresentacionModel idProductoPresentacion,
-        BigDecimal cantidad, 
-        LocalDateTime fechaAgregado, 
-        BigDecimal precioActual, 
-        String nombreProducto,
-        String unidadmedidaPresentacion,
-        boolean activo
-        ) {  
-        this.idCarrito = idCarrito;
-        this.idProductoPresentacion = idProductoPresentacion;
+    public ItemCarritoModel(CarritoModel carrito, ProductoPresentacionModel productoPresentacion, ProductoImagenModel productoImagen, BigDecimal cantidad, BigDecimal precioActual, String nombreProducto, String unidadmedidaPresentacion) {
+        this.carrito = carrito;
+        this.productoPresentacion = productoPresentacion;
+        this.productoImagen = productoImagen;
         this.cantidad = cantidad;
-        this.fechaAgregado = fechaAgregado;
+        this.fechaAgregado = LocalDateTime.now();
         this.precioActual = precioActual;
         this.nombreProducto = nombreProducto;
         this.unidadmedidaPresentacion = unidadmedidaPresentacion;
-        this.activo = activo;
+        this.activo = true; // Por defecto el item está activo al ser agregado
+    }
+
+    @PrePersist
+    public void prePersist() {
+        this.fechaAgregado = LocalDateTime.now();
+        this.activo = true; // Por defecto el item está activo al ser agregado
     }
     
 }

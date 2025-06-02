@@ -3,6 +3,8 @@ package com.vegastore.jitarger.model;
 import java.time.LocalDateTime;
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
@@ -12,20 +14,23 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
-import jakarta.persistence.OneToOne;
+import jakarta.persistence.PrePersist;
+import jakarta.persistence.PreUpdate;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.Pattern;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @Entity
 @Table(name = "usuario")
 @AllArgsConstructor
 @NoArgsConstructor
-@Data
+@Getter
+@Setter
 @Builder
 public class UsuarioModel {
 
@@ -59,41 +64,57 @@ public class UsuarioModel {
     private String clave;
 
     @Column(name = "rol", length = 50, nullable = false)
-    @Schema(description = "Rol del usuario")
+    @Schema(description = "Rol del usuario,  o cliente")
     private String rol;
 
     @Column(name = "fecha_registro", nullable = false)
     @Schema(description = "Fecha de creación del usuario")
     private LocalDateTime fechaRegistro;
 
-    // Listas de relaciones
+    @Column(name = "fecha_actualizacion", nullable = false)
+    @Schema(description = "Fecha de actualización del usuario")
+    private LocalDateTime fechaActualizacion;
 
-    @OneToMany(mappedBy = "idUsuario", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @Column(name = "activo", nullable = false)
+    @Schema(description = "Estado del usuario, activo o inactivo. Activo significa que el usuario puede realizar acciones en la aplicación")
+    private boolean activo;
+
+    // --- Listas de relaciones ---
+
+    @OneToMany(mappedBy = "usuario", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @Schema(description = "Lista de pedidos del usuario")
+    @JsonIgnore
     private List<PedidoModel> pedidos;
 
-    // Relacion 1 a 1 con el carrito
-    @OneToOne(mappedBy = "idUsuario", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    private CarritoModel idCarrito;
+    // Relacion 1 a N con el carrito
+    @OneToMany(mappedBy = "usuario", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @Schema(description = "Lista de carritos del usuario")
+    @JsonIgnore
+    private List<CarritoModel> carrito;
 
     // Constructor personalizado para la creación de objetos de la tabla usuario
-
-    public UsuarioModel(
-        String nombre, 
-        String apellido, 
-        String correo, 
-        String telefono,
-        String clave, 
-        String rol, 
-        LocalDateTime fechaRegistro
-        ) {
+    public UsuarioModel(String nombre, String apellido, String correo, String telefono, String clave, String rol) {
         this.nombre = nombre;
         this.apellido = apellido;
         this.correo = correo;
         this.telefono = telefono;
         this.clave = clave;
         this.rol = rol;
-        this.fechaRegistro = fechaRegistro;
+        this.fechaRegistro = LocalDateTime.now();
+        this.fechaActualizacion = LocalDateTime.now();
+        this.activo = true; // Por defecto el usuario está activo al crearse
     }
-    
+
+    @PrePersist
+    public void prePersist() {
+        this.fechaRegistro = LocalDateTime.now();
+        this.fechaActualizacion = LocalDateTime.now();
+        this.activo = true; // Por defecto el usuario está activo al crearse
+    }
+
+    @PreUpdate
+    public void preUpdate() {
+        this.fechaActualizacion = LocalDateTime.now();
+    }
+
 }

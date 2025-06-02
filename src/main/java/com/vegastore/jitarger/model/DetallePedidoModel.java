@@ -35,19 +35,19 @@ public class DetallePedidoModel {
     @ManyToOne
     @JoinColumn(name = "id_pedido")
     @Schema(description = "Identificador del pedido")
-    private PedidoModel idPedido;
+    private PedidoModel pedido;
 
     // Foreign key
     @ManyToOne
     @JoinColumn(name = "id_producto_presentacion")
     @Schema(description = "Identificador del producto")
-    private ProductoPresentacionModel idProductoPresentacion;
+    private ProductoPresentacionModel productoPresentacion;
 
     // Foreign key
     @ManyToOne
     @JoinColumn(name = "id_lote")
     @Schema(description = "Identificador del lote")
-    private LoteModel idLote;
+    private LoteModel lote;
 
     @Column(name = "cantidad", precision = 10, scale = 3)
     @Schema(description = "Cantidad del detalle del pedido")
@@ -70,13 +70,12 @@ public class DetallePedidoModel {
     private String unidadmedidaPresentacion;
 
     // Constructor personalizado para la creación de objetos de la tabla detalle_pedido
-
-    public DetallePedidoModel(PedidoModel idPedido, ProductoPresentacionModel idProductoPresentacion, LoteModel idLote,
-            BigDecimal cantidad, BigDecimal precioUnitario, BigDecimal subTotal, String nombreProducto,
-            String unidadmedidaPresentacion) {
-        this.idPedido = idPedido;
-        this.idProductoPresentacion = idProductoPresentacion;
-        this.idLote = idLote;
+    public DetallePedidoModel(PedidoModel pedido, ProductoPresentacionModel productoPresentacion, LoteModel lote,
+                                BigDecimal cantidad, BigDecimal precioUnitario, BigDecimal subTotal,
+                                String nombreProducto, String unidadmedidaPresentacion) {
+        this.pedido = pedido;
+        this.productoPresentacion = productoPresentacion;
+        this.lote = lote;
         this.cantidad = cantidad;
         this.precioUnitario = precioUnitario;
         this.subTotal = subTotal;

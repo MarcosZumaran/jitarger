@@ -3,6 +3,8 @@ package com.vegastore.jitarger.model;
 import java.time.LocalDateTime;
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
@@ -14,6 +16,8 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
+import jakarta.persistence.PrePersist;
+import jakarta.persistence.PreUpdate;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -47,16 +51,16 @@ public class ProductoModel {
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "id_categoria")
     @Schema(description = "Id de la categoria del producto")
-    private CategoriaModel idCategoria;
+    private CategoriaModel categoria;
 
     // Foreign key
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name =  "id_subcategoria")
     @Schema(description = "Id de la subcategoria del producto")
-    private SubCategoriaModel idSubCategoria;
+    private SubCategoriaModel subcategoria;
 
     @Column(name = "estado", length = 20, nullable = false)
-    @Schema(description = "Estado del producto")
+    @Schema(description = "Estado del producto, DISPONIBLE o NO DISPONIBLE", example = "DISPONIBLE")
     private String estado;
 
     @Column(name = "tipo_prenda", length = 50, nullable = false)
@@ -91,48 +95,55 @@ public class ProductoModel {
     @Schema(description = "Fecha de creación del producto")
     private LocalDateTime fechaRegistro;
 
+    @Column(name = "fecha_actualizacion")
+    @Schema(description = "Fecha de actualización del producto")
+    private LocalDateTime fechaActualizacion;
+
     // Listas de relaciones
 
-    @OneToMany(mappedBy = "idProducto", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "producto", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @Schema(description = "Lista de presentaciones del producto")
+    @JsonIgnore
     private List<ProductoPresentacionModel> productoPresentacion;
 
-    @OneToMany(mappedBy = "idProducto", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "producto", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @Schema(description = "Lista de lotes del producto")
+    @JsonIgnore
     private List<LoteModel> lotes;
 
-    @OneToMany(mappedBy = "idProducto", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "producto", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @Schema(description = "Lista de imagenes del producto")
+    @JsonIgnore
     private List<ProductoImagenModel> imagenes;
 
     // Constructor personalizado para la creación de objetos de la tabla producto
 
-    public ProductoModel(
-        String nombre, 
-        String descripcion, 
-        CategoriaModel idCategoria, 
-        String estado, 
-        String tipoPrenda, 
-        String marca, 
-        String talla,
-        String color, 
-        String genero, 
-        String material, 
-        String temporada, 
-        LocalDateTime fechaRegistro
-        ) {
+    public ProductoModel(String nombre, String descripcion, CategoriaModel categoria, SubCategoriaModel subcategoria, String tipoPrenda, String marca, String talla, String color, String genero, String material) {
         this.nombre = nombre;
         this.descripcion = descripcion;
-        this.idCategoria = idCategoria;
-        this.estado = estado;
+        this.categoria = categoria;
+        this.subcategoria = subcategoria;
+        this.estado = "DISPONIBLE"; // Por defecto el estado es activo
         this.tipoPrenda = tipoPrenda;
         this.marca = marca;
         this.talla = talla;
         this.color = color;
         this.genero = genero;
         this.material = material;
-        this.temporada = temporada;
-        this.fechaRegistro = fechaRegistro;
+        this.fechaRegistro = LocalDateTime.now();
+        this.fechaActualizacion = LocalDateTime.now();
+    }
+
+    @PrePersist
+    public void prePersist() {
+        this.fechaRegistro = LocalDateTime.now();
+        this.fechaActualizacion = LocalDateTime.now();
+        this.estado = "DISPONIBLE"; // Por defecto el estado es activo al crearse
+    }
+
+    @PreUpdate
+    public void preUpdate() {
+        this.fechaActualizacion = LocalDateTime.now();
     }
     
 }

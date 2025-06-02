@@ -8,10 +8,14 @@ import com.vegastore.jitarger.dto.update.UpdateSubCategoriaDTO;
 
 public interface SubCategoriaService {
 
-    List<SubCategoriaDTO> obtenerSubcategorias();
-    List<SubCategoriaDTO> obtenerSubcategoriasPorCategoria(long idCategoria);
+    List<SubCategoriaDTO> obtenerSubcategorias(int pagina);
+    List<SubCategoriaDTO> obtenerTodasLasSubcategorias();
+    List<SubCategoriaDTO> obtenerSubcategoriasPorNombre(String nombre);
+    List<SubCategoriaDTO> obtenerSubcategoriasPorNombreParcial(String nombreParcial);
+    List<SubCategoriaDTO> obtenerSubcategoriasPorCategoria(long idCategoria, int pagina);
+    List<SubCategoriaDTO> obtenerTodasLasSubcategoriasPorCategoria(long idCategoria);
     SubCategoriaDTO obtenerSubcategoriaPorId(long id);
-    long crearSubcategoria(CreateSubCategoriaDTO subcategoriaDTO);
+    SubCategoriaDTO crearSubcategoria(CreateSubCategoriaDTO subcategoriaDTO);
     void actualizarSubcategoria(long id, UpdateSubCategoriaDTO subcategoriaDTO);
     void borrarSubcategoria(long id);
     boolean existeSubcategoria(long id);

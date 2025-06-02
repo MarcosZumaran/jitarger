@@ -8,11 +8,12 @@ import com.vegastore.jitarger.dto.update.UpdateLoteDTO;
 
 public interface LoteService {
 
-    List<LoteDTO> obtenerLotes();
-    List<LoteDTO> obtenerLotesPorProducto(long idProducto);
-    List<LoteDTO> obtenerLotesPorProveedor(long idProveedor);
+    List<LoteDTO> obtenerTodosLosLotes();
+    List<LoteDTO> obtenerLotes(int pagina);
+    List<LoteDTO> obtenerLotesPorProducto(int pag, long idProducto);
+    List<LoteDTO> obtenerLotesPorProveedor(int pag, long idProveedor);
     LoteDTO obtenerLotePorId(long id);
-    long crearLote(CreateLoteDTO loteDTO);
+    LoteDTO crearLote(CreateLoteDTO loteDTO);
     void actualizarLote(long id, UpdateLoteDTO loteDTO);
     void borrarLote(long id);
     boolean existeLote(long id);

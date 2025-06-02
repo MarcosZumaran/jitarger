@@ -10,7 +10,7 @@ public interface ProductoPresentacionService {
 
     List<ProductoPresentacionDTO> obtenerPresentacionesPorProducto(long idProducto);
     ProductoPresentacionDTO obtenerPresentacionPorId(long id);
-    long crearPresentacion(CreateProductoPresentacionDTO presentacionDTO);
+    ProductoPresentacionDTO crearPresentacion(CreateProductoPresentacionDTO presentacionDTO);
     void actualizarPresentacion(long id, UpdateProductoPresentacionDTO presentacionDTO);
     void borrarPresentacion(long id);
     boolean existePresentacion(long id);

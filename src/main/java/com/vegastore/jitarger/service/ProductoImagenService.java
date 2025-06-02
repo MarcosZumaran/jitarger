@@ -9,7 +9,11 @@ import com.vegastore.jitarger.dto.update.UpdateProductoImagenDTO;
 public interface ProductoImagenService {
 
     List<ProductoImagenDTO> obtenerImagenesPorProducto(long idProducto);
-    List<ProductoImagenDTO> obtenerImagenesPorTipo(String tipo);
+    List<ProductoImagenDTO> obtenerImagenesPorProductoYTipo(long idProducto, String tipo);
+    List<ProductoImagenDTO> obtenerTodasLasImagenes();
+    List<ProductoImagenDTO> obtenerImagenes(int pagina);
+    List<ProductoImagenDTO> obtenerTodasLasImagenesPorTipo(String tipo);
+    List<ProductoImagenDTO> obtenerImagenesPorTipo(int pagina, String tipo);
     ProductoImagenDTO obtenerImagenPorId(long id);
     long crearImagen(CreateProductoImagenDTO imagenDTO);
     void actualizarImagen(long id, UpdateProductoImagenDTO imagenDTO);

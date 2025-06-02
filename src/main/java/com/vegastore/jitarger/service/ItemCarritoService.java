@@ -7,11 +7,13 @@ import com.vegastore.jitarger.dto.create.CreateCarritoDTO;
 import com.vegastore.jitarger.dto.update.UpdateItemCarritoDTO;
 
 public interface ItemCarritoService {
-    List<ItemCarritoDTO> obtenerItemsCarritoPorCarrito(long idCarrito);
-    List<ItemCarritoDTO> obtenerItemsCarritoPorCarritoSiEsActivo(long idCarrito, boolean activo);
-    List<ItemCarritoDTO> obtenerItemsCarritoPorCarritoSiNoEsActivo(long idCarrito, boolean activo);
+    List<ItemCarritoDTO> obtenerTodosLosItemsCarrito();
+    List<ItemCarritoDTO> obtenerItemsCarrito(int pagina);
+    List<ItemCarritoDTO> obtenerItemsCarritoPorCarrito(int pag, long idCarrito);
+    List<ItemCarritoDTO> obtenerItemsCarritoPorCarritoSiEsActivo(int pagina, long idCarrito);
+    List<ItemCarritoDTO> obtenerItemsCarritoPorCarritoSiNoEsActivo(int pagina, long idCarrito);
     ItemCarritoDTO obtenerItemCarritoPorId(long id);
-    long crearItemCarrito(CreateCarritoDTO carritoDTO);
+    ItemCarritoDTO crearItemCarrito(CreateCarritoDTO carritoDTO);
     void actualizarItemCarrito(long id, UpdateItemCarritoDTO carritoDTO);
     void borrarItemCarrito(long id);
     boolean existeItemCarrito(long id);

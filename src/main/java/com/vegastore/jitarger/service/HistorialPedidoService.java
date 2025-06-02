@@ -6,10 +6,10 @@ import com.vegastore.jitarger.dto.base.HistorialPedidoDTO;
 import com.vegastore.jitarger.dto.create.CreateHistorialPedidoDTO;
 
 public interface HistorialPedidoService {
-    List<HistorialPedidoDTO> obtenerHistorialPedidoPorUsuario(long idUsuario);
-    List<HistorialPedidoDTO> obtenerHistorialPedidoPorPedido(long idPedido);
+    List<HistorialPedidoDTO> obtenerHistorialPedidoPorUsuario(int pagina,long idUsuario);
+    List<HistorialPedidoDTO> obtenerHistorialPedidoPorPedido(int pagina, long idPedido);
     HistorialPedidoDTO obtenerHistorialPedidoPorId(long id);
-    long crearHistorialPedido(CreateHistorialPedidoDTO historialPedidoDTO);
+    HistorialPedidoDTO crearHistorialPedido(CreateHistorialPedidoDTO historialPedidoDTO);
     void borrarHistorialPedido(long id);
     boolean existeHistorialPedido(long id);
 }

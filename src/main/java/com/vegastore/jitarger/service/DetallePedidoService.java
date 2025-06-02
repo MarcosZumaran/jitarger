@@ -7,7 +7,7 @@ import com.vegastore.jitarger.dto.create.CreateDetallePedidoDTO;
 import com.vegastore.jitarger.dto.update.UpdateDetallePedidoDTO;
 
 public interface DetallePedidoService {
-    List<DetallePedidoDTO> obtenerDetallesPedidoPorPedido(long pedidoId);
+    List<DetallePedidoDTO> obtenerDetallesPedidoPorPedido(int pagina,long pedidoId);
     DetallePedidoDTO obtenerDetallePedidoPorId(long id);
     DetallePedidoDTO crearDetallePedido(CreateDetallePedidoDTO detallePedidoDTO);
     void actualizarDetallePedido(long id, UpdateDetallePedidoDTO detallePedidoDTO);

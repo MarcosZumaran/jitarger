@@ -56,12 +56,6 @@ public class CarritoServiceImpl implements CarritoService{
 
     @Override
     public long crearCarrito(CreateCarritoDTO carrito) {
-        // Verificar que no exista ya un carrito para este usuario
-        if (existeCarritoParaUsuario(carrito.getIdUsuario())) {
-            throw new RecursoDuplicadoException(
-                    "El usuario con ID " + carrito.getIdUsuario() + " ya tiene un carrito asignado");
-        }
-
         // Si no se proporciona fecha de creación, usar la fecha actual
         final LocalDateTime fechaCreacionFinal = carrito.getFechaCreacion() != null ? carrito.getFechaCreacion()
                 : LocalDateTime.now();

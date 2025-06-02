@@ -6,7 +6,7 @@ import com.vegastore.jitarger.dto.create.CreateCarritoDTO;
 public interface CarritoService {
     CarritoDTO obtenerCarritoPorId(long id);
     CarritoDTO obtenerCarritoPorUsuarioId(long id);
-    long crearCarrito(CreateCarritoDTO carritoDTO);
+    CarritoDTO crearCarrito(CreateCarritoDTO carritoDTO);
     void borrarCarrito(long id);
     boolean existeCarritoParaUsuario(long idUsuario);
 }

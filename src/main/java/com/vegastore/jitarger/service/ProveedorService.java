@@ -8,11 +8,15 @@ import com.vegastore.jitarger.dto.update.UpdateProveedorDTO;
 
 public interface ProveedorService {
 
-    List<ProveedorDTO> obtenerProveedores();
+    List<ProveedorDTO> obtenerProveedores(int pagina);
+    List<ProveedorDTO> obtenerTodosLosProveedores();
+    List<ProveedorDTO> obtenerProveedoresPorNombre(String nombre);
+    List<ProveedorDTO> obtenerProveedoresPorNombreParcial(String nombre);
     ProveedorDTO obtenerProveedorPorId(long id);
     ProveedorDTO obtenerProveedorPorRuc(String ruc);
-    List<ProveedorDTO> buscarProveedoresPorNombre(String nombre);
-    long crearProveedor(CreateProveedorDTO proveedorDTO);
+    ProveedorDTO obtenerProveedorPorRucParcial(String rucParcial);
+    ProveedorDTO obtenerProveedorPorLote(int idLote);
+    ProveedorDTO crearProveedor(CreateProveedorDTO proveedorDTO);
     void actualizarProveedor(long id, UpdateProveedorDTO proveedorDTO);
     void borrarProveedor(long id);
     boolean existeProveedor(long id);

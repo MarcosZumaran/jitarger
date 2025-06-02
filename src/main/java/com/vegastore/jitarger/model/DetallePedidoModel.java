@@ -47,7 +47,7 @@ public class DetallePedidoModel {
     @ManyToOne
     @JoinColumn(name = "id_lote")
     @Schema(description = "Identificador del lote")
-    private LoteModel lote;
+    private LoteModel idLote;
 
     @Column(name = "cantidad", precision = 10, scale = 3)
     @Schema(description = "Cantidad del detalle del pedido")
@@ -71,12 +71,12 @@ public class DetallePedidoModel {
 
     // Constructor personalizado para la creación de objetos de la tabla detalle_pedido
 
-    public DetallePedidoModel(PedidoModel idPedido, ProductoPresentacionModel idProductoPresentacion, LoteModel lote,
+    public DetallePedidoModel(PedidoModel idPedido, ProductoPresentacionModel idProductoPresentacion, LoteModel idLote,
             BigDecimal cantidad, BigDecimal precioUnitario, BigDecimal subTotal, String nombreProducto,
             String unidadmedidaPresentacion) {
         this.idPedido = idPedido;
         this.idProductoPresentacion = idProductoPresentacion;
-        this.lote = lote;
+        this.idLote = idLote;
         this.cantidad = cantidad;
         this.precioUnitario = precioUnitario;
         this.subTotal = subTotal;

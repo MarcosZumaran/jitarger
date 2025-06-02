@@ -25,6 +25,6 @@ public class UpdateItemCarritoDTO {
 
     @NotBlank(message = "El nombre del producto no puede estar en blanco")
     @Schema(description = "Nombre del producto", example = "Producto 1")
-    private boolean activo;
+    private String estado;
     
 }

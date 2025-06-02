@@ -25,6 +25,7 @@ public class ProductoImagenModel {
     // Atributos de la tabla producto_imagen
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Schema
     private long id;
 
     // Foreign key

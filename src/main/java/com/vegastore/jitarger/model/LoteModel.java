@@ -39,13 +39,13 @@ public class LoteModel {
     @ManyToOne
     @JoinColumn(name = "id_producto")
     @Schema(description = "Id del producto")
-    private ProductoModel producto;
+    private ProductoModel idProducto;
 
     // Foreign key
     @ManyToOne
     @JoinColumn(name = "id_proveedor")
     @Schema(description = "Id del proveedor del producto")
-    private ProveedorModel proveedor;
+    private ProveedorModel idProveedor;
 
     @Column(name = "unidad_medida", length = 20, nullable = false)
     @Schema(description = "Unidad de medida del lote")
@@ -72,15 +72,15 @@ public class LoteModel {
     private BigDecimal cantidadDisponible;
 
     // Listas de relaciones
-    @OneToMany(mappedBy = "lote", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "idLote", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @Schema(description = "Lista de detalles del pedido")
     private List<DetallePedidoModel> detalles;
 
     // Constructor personalizado para la creación de objetos de la tabla lote
 
     public LoteModel(
-        ProductoModel producto, 
-        ProveedorModel proveedor,
+        ProductoModel idProducto, 
+        ProveedorModel idProveedor,
         String unidadMedidaBase, 
         String unidadAbreviatura, 
         BigDecimal costo,
@@ -88,8 +88,8 @@ public class LoteModel {
         BigDecimal cantidadInicial, 
         BigDecimal cantidadDisponible
         ) {
-        this.producto = producto;
-        this.proveedor = proveedor;
+        this.idProducto = idProducto;
+        this.idProveedor = idProveedor;
         this.unidadMedidaBase = unidadMedidaBase;
         this.unidadAbreviatura = unidadAbreviatura;
         this.costo = costo;

@@ -33,7 +33,7 @@ public class ProductoPresentacionModel {
     @ManyToOne
     @JoinColumn(name = "id_producto")
     @Schema(description = "Id del producto")
-    private ProductoModel producto;
+    private ProductoModel idProducto;
 
     @Column(name = "unidad_medida", length = 20, nullable = false)
     @Schema(description = "Unidad de medida de la presentación del producto")
@@ -49,12 +49,12 @@ public class ProductoPresentacionModel {
 
     // Constructor personalizado para la creación de objetos de la tabla producto_presentacion
     public ProductoPresentacionModel(
-        ProductoModel producto, 
+        ProductoModel idProducto, 
         String unidadMedida, 
         String unidadAbreviatura, 
         int equivalencia
         ) {
-        this.producto = producto;
+        this.idProducto = idProducto;
         this.unidadMedida = unidadMedida;
         this.unidadAbreviatura = unidadAbreviatura;
         this.equivalencia = equivalencia;

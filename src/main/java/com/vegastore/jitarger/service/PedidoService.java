@@ -12,7 +12,7 @@ public interface PedidoService {
     List<PedidoDTO> obtenerPedidosPorUsuario(long idUsuario);
     List<PedidoDTO> obtenerPedidosPorEstado(String estado);
     PedidoDTO obtenerPedidoPorId(long id);
-    PedidoDTO crearPedido(CreatePedidoDTO pedidoDTO);
+    long crearPedido(CreatePedidoDTO pedidoDTO);
     void actualizarPedido(long id, UpdatePedidoDTO pedidoDTO);
     void actualizarEstadoPedido(long id, String nuevoEstado, String comentario);
     void cancelarPedido(long id, String comentario);

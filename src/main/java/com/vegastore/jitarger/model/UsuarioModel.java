@@ -3,7 +3,6 @@ package com.vegastore.jitarger.model;
 import java.time.LocalDateTime;
 import java.util.List;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
@@ -14,26 +13,23 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
-import jakarta.persistence.PrePersist;
-import jakarta.persistence.PreUpdate;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.Pattern;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.Getter;
+import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
-
 
 @Entity
 @Table(name = "usuario")
 @AllArgsConstructor
 @NoArgsConstructor
-@Getter
-@Setter
+@Data
 @Builder
 public class UsuarioModel {
+
+    // Atributos de la tabla usuario
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -58,7 +54,6 @@ public class UsuarioModel {
     @Schema(description = "Telefono del usuario")
     private String telefono;
 
-    @JsonIgnore
     @Column(name = "clave", length = 50, nullable = false)
     @Schema(description = "Clave del usuario")
     private String clave;
@@ -71,20 +66,18 @@ public class UsuarioModel {
     @Schema(description = "Fecha de creación del usuario")
     private LocalDateTime fechaRegistro;
 
-    @Column(name = "fecha_actualizacion")
-    @Schema(description = "Fecha de última actualización del usuario")
-    private LocalDateTime fechaActualizacion;
+    // Listas de relaciones
 
-    @JsonIgnore
-    @OneToMany(mappedBy = "usuario", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "idUsuario", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @Schema(description = "Lista de pedidos del usuario")
     private List<PedidoModel> pedidos;
 
-    @JsonIgnore
-    @OneToOne(mappedBy = "usuario", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    private CarritoModel carrito;
+    // Relacion 1 a 1 con el carrito
+    @OneToOne(mappedBy = "idUsuario", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    private CarritoModel idCarrito;
 
-    // Constructor personalizado
+    // Constructor personalizado para la creación de objetos de la tabla usuario
+
     public UsuarioModel(
         String nombre, 
         String apellido, 
@@ -93,7 +86,7 @@ public class UsuarioModel {
         String clave, 
         String rol, 
         LocalDateTime fechaRegistro
-    ) {
+        ) {
         this.nombre = nombre;
         this.apellido = apellido;
         this.correo = correo;
@@ -102,17 +95,5 @@ public class UsuarioModel {
         this.rol = rol;
         this.fechaRegistro = fechaRegistro;
     }
-
-    // PrePersist para asignar la fecha de creación
-    @PrePersist
-    public void prePersist() {
-        this.fechaRegistro = LocalDateTime.now();
-        this.fechaActualizacion = LocalDateTime.now();
-    }
-
-    // PreUpdate para asignar la fecha de actualización
-    @PreUpdate
-    public void preUpdate() {
-        this.fechaActualizacion = LocalDateTime.now();
-    }
+    
 }

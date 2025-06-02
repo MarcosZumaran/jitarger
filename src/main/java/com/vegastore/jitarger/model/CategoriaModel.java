@@ -3,8 +3,6 @@ package com.vegastore.jitarger.model;
 import java.time.LocalDateTime;
 import java.util.List;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
@@ -14,7 +12,6 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
-import jakarta.persistence.PrePersist;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -29,44 +26,46 @@ import lombok.NoArgsConstructor;
 @Builder
 public class CategoriaModel {
 
+    // Atributos de la tabla categoria
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Schema(description = "Identificador de la categoría")
+    @Schema(description = "Identificador de la categoria")
     private long id;
 
     @Column(name = "nombre", length = 50, nullable = false)
-    @Schema(description = "Nombre de la categoría")
+    @Schema(description = "Nombre de la categoria")
     private String nombre;
 
     @Column(name = "descripcion", length = 160, nullable = false)
-    @Schema(description = "Descripción de la categoría")
+    @Schema(description = "Descripción de la categoria")
     private String descripcion;
 
     @Column(name = "fecha_registro", nullable = false)
-    @Schema(description = "Fecha de registro de la categoría")
+    @Schema(description = "Fecha de creación de la categoria")
     private LocalDateTime fechaRegistro;
 
-    @OneToMany(mappedBy = "categoria", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    @JsonIgnore
-    @Schema(description = "Lista de productos de la categoría")
+
+    // Listas de relaciones
+
+    @OneToMany(mappedBy = "idCategoria", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @Schema(description = "Lista de productos de la categoria")
     private List<ProductoModel> productos;
 
-    @OneToMany(mappedBy = "categoria", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    @JsonIgnore
-    @Schema(description = "Lista de subcategorías de la categoría")
+    @OneToMany(mappedBy = "idCategoria", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @Schema(description = "Lista de subcategorias de la categoria")
     private List<SubCategoriaModel> subcategorias;
 
-    // Constructor personalizado
-    public CategoriaModel(String nombre, String descripcion) {
+    // Constructor personalizado para la creación de objetos de la tabla categoria
+
+    public CategoriaModel(
+        String nombre, 
+        String descripcion, 
+        LocalDateTime fechaRegistro
+        ) {
         this.nombre = nombre;
         this.descripcion = descripcion;
-        this.fechaRegistro = LocalDateTime.now();
+        this.fechaRegistro = fechaRegistro;
     }
-
-    @PrePersist
-    public void prePersist() {
-        if (fechaRegistro == null) {
-            fechaRegistro = LocalDateTime.now();
-        }
-    }
+    
 }

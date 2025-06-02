@@ -15,6 +15,5 @@ public interface CategoriaService {
     void actualizarCategoria(long id, UpdateCategoriaDTO categoriaDTO);
     void borrarCategoria(long id);
     boolean existeCategoria(long id);
-    int contarCategorias();
     
 }

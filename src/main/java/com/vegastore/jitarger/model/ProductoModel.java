@@ -47,7 +47,7 @@ public class ProductoModel {
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "id_categoria")
     @Schema(description = "Id de la categoria del producto")
-    private CategoriaModel categoria;
+    private CategoriaModel idCategoria;
 
     // Foreign key
     @ManyToOne(fetch = FetchType.EAGER)
@@ -93,15 +93,15 @@ public class ProductoModel {
 
     // Listas de relaciones
 
-    @OneToMany(mappedBy = "producto", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "idProducto", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @Schema(description = "Lista de presentaciones del producto")
     private List<ProductoPresentacionModel> productoPresentacion;
 
-    @OneToMany(mappedBy = "producto", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "idProducto", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @Schema(description = "Lista de lotes del producto")
     private List<LoteModel> lotes;
 
-    @OneToMany(mappedBy = "producto", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "idProducto", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @Schema(description = "Lista de imagenes del producto")
     private List<ProductoImagenModel> imagenes;
 
@@ -110,7 +110,7 @@ public class ProductoModel {
     public ProductoModel(
         String nombre, 
         String descripcion, 
-        CategoriaModel categoria, 
+        CategoriaModel idCategoria, 
         String estado, 
         String tipoPrenda, 
         String marca, 
@@ -123,7 +123,7 @@ public class ProductoModel {
         ) {
         this.nombre = nombre;
         this.descripcion = descripcion;
-        this.categoria = categoria;
+        this.idCategoria = idCategoria;
         this.estado = estado;
         this.tipoPrenda = tipoPrenda;
         this.marca = marca;

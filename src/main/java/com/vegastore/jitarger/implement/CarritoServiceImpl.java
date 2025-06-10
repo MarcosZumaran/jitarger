@@ -4,6 +4,7 @@ import java.sql.PreparedStatement;
 import java.sql.Statement;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
+import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
@@ -15,22 +16,36 @@ import org.springframework.stereotype.Service;
 
 import com.vegastore.jitarger.dto.base.CarritoDTO;
 import com.vegastore.jitarger.dto.create.CreateCarritoDTO;
-import com.vegastore.jitarger.exception.RecursoDuplicadoException;
+import com.vegastore.jitarger.dto.update.UpdateCarritoDTO;
 import com.vegastore.jitarger.exception.RecursoNoEncontradoException;
 import com.vegastore.jitarger.service.CarritoService;
 
 @Service
-public class CarritoServiceImpl implements CarritoService{
+public class CarritoServiceImpl implements CarritoService {
 
     @Autowired
     private JdbcTemplate jdbcTemplate;
 
     // Row mapper para mapear los resultados de la consulta a un objeto CarritoDTO
-    private final RowMapper<CarritoDTO> carritoRowMapper = (rs, rowNum) -> CarritoDTO.builder()
-    .id(rs.getLong("id"))
-    .idUsuario(rs.getLong("id_usuario"))
-    .fechaCreacion(rs.getTimestamp("fecha_creacion").toLocalDateTime())
-    .build(); 
+    private final RowMapper<CarritoDTO> carritoRowMapper = (rs, rowNum) -> {
+        Timestamp fechaCambio = rs.getTimestamp("fecha_cambio_estado");
+        return CarritoDTO.builder()
+                .id(rs.getLong("id"))
+                .idUsuario(rs.getLong("id_usuario"))
+                .fechaCreacion(rs.getTimestamp("fecha_creacion").toLocalDateTime())
+                .fechaCambioEstado(fechaCambio != null ? fechaCambio.toLocalDateTime() : null)
+                .estado(rs.getString("estado"))
+                .build();
+    };
+
+    private static final Set<String> ESTADOS_VALIDOS = Set.of("ACTIVO", "PROCESADO", "CANCELADO");
+
+    private void validarEstado(String estado) {
+        if (estado == null || !ESTADOS_VALIDOS.contains(estado.toUpperCase())) {
+            throw new IllegalArgumentException("Estado inválido: " + estado);
+        }
+    }
+
 
     // Implementación de los métodos de la interfaz CarritoService
 
@@ -40,7 +55,7 @@ public class CarritoServiceImpl implements CarritoService{
         try {
             return jdbcTemplate.queryForObject(sql, carritoRowMapper, id);
         } catch (EmptyResultDataAccessException e) {
-            throw new RecursoNoEncontradoException("No se encontro el carrito con ID: " + id, sql, e);
+            throw new RecursoNoEncontradoException("Carrito no encontrado con ID: " + id, sql, e);
         }
     }
 
@@ -50,48 +65,56 @@ public class CarritoServiceImpl implements CarritoService{
         try {
             return jdbcTemplate.queryForObject(sql, carritoRowMapper, id);
         } catch (EmptyResultDataAccessException e) {
-            throw new RecursoNoEncontradoException("No se encontro el carrito con ID de usuario: " + id, sql, e);
+            throw new RecursoNoEncontradoException("Carrito no encontrado para el usuario con ID: " + id, sql, e);
         }
     }
 
     @Override
-    public long crearCarrito(CreateCarritoDTO carrito) {
-        // Si no se proporciona fecha de creación, usar la fecha actual
-        final LocalDateTime fechaCreacionFinal = carrito.getFechaCreacion() != null ? carrito.getFechaCreacion()
-                : LocalDateTime.now();
+    public CarritoDTO crearCarrito(CreateCarritoDTO carritoDTO) {
+        LocalDateTime fechaCreacion = LocalDateTime.now();
 
-        // Insertar el carrito y obtener el ID generado
-        String sql = "INSERT INTO carrito (id_usuario, fecha_creacion) VALUES (?, ?)";
+        String estado = carritoDTO.getEstado().toUpperCase();
+        validarEstado(estado);
+
+        String sql = "INSERT INTO carrito (id_usuario, fecha_creacion, estado) VALUES (?, ?, ?)";
         KeyHolder keyHolder = new GeneratedKeyHolder();
 
         jdbcTemplate.update(connection -> {
             PreparedStatement ps = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
-            ps.setLong(1, carrito.getIdUsuario());
-            ps.setTimestamp(2, Timestamp.valueOf(fechaCreacionFinal));
+            ps.setLong(1, carritoDTO.getIdUsuario());
+            ps.setTimestamp(2, Timestamp.valueOf(fechaCreacion));
+            ps.setString(3, estado);
             return ps;
         }, keyHolder);
 
         Number key = keyHolder.getKey();
         if (key == null) {
-            throw new RuntimeException("No se pudo obtener el ID generado para el carrito");
+            throw new IllegalStateException("No se pudo obtener el ID generado para el carrito");
         }
-        return key.intValue();
+
+        return obtenerCarritoPorId(key.longValue());
     }
 
     @Override
-    public void borrarCarrito(long id){
+    public void actualizarCarrito(long id, UpdateCarritoDTO carritoDTO) {
+        validarEstado(carritoDTO.getEstado().toUpperCase());
+
+        String sql = "UPDATE carrito SET estado = ?, fecha_cambio_estado = ? WHERE id = ?";
+        int rowsAffected = jdbcTemplate.update(sql, carritoDTO.getEstado(), Timestamp.valueOf(LocalDateTime.now()), id);
+
+        if (rowsAffected == 0) {
+            throw new RecursoNoEncontradoException("Carrito no encontrado con ID: " + id, sql, rowsAffected);
+        }
+    }
+
+    @Override
+    public void borrarCarrito(long id) {
         String sql = "DELETE FROM carrito WHERE id = ?";
         int rowsAffected = jdbcTemplate.update(sql, id);
+
         if (rowsAffected == 0) {
-            throw new RecursoNoEncontradoException("No se encontro el carrito con ID: " + id, sql, rowsAffected);
+            throw new RecursoNoEncontradoException("Carrito no encontrado con ID: " + id, sql, rowsAffected);
         }
     }
 
-    @Override
-    public boolean existeCarritoParaUsuario(long idUsuario) {
-        String sql = "SELECT COUNT(id) FROM carrito WHERE id_usuario = ?";
-        Integer count = jdbcTemplate.queryForObject(sql, Integer.class, idUsuario);
-        return count != null && count > 0;
-    }
-    
 }

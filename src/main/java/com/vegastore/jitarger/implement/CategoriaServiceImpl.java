@@ -2,6 +2,8 @@ package com.vegastore.jitarger.implement;
 
 import java.sql.PreparedStatement;
 import java.sql.Statement;
+import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Objects;
 
@@ -30,106 +32,112 @@ public class CategoriaServiceImpl implements CategoriaService {
             .id(rs.getLong("id"))
             .nombre(rs.getString("nombre"))
             .descripcion(rs.getString("descripcion"))
+            .fechaRegistro(rs.getTimestamp("fecha_registro").toLocalDateTime())
+            .fechaActualizacion(rs.getTimestamp("fecha_actualizacion").toLocalDateTime())
+            .activa(rs.getBoolean("activa"))
             .build();
 
-    // Aquí irían las implementaciones de los métodos de la interfaz CategoriaService
-    // Por ejemplo, obtener categorías, crear una nueva categoría, etc.
-
     @Override
-    @Transactional(readOnly = true)
-    public List<CategoriaDTO> obtenerCategorias(){
-        String sql = "SELECT * FROM categoria ORDER BY nombre";
-        // Utilizamos jdbcTemplate para ejecutar la consulta y mapear los resultados a una lista de CategoriaDTO
-        // El RowMapper se encarga de convertir cada fila del resultado en un objeto CategoriaDTO
-        // Retornamos la lista de categorías
-        // Si no hay categorías, se retornará una lista vacía
-        // Si hay categorías, se retornará una lista con los objetos CategoriaDTO correspondientes
+    public List<CategoriaDTO> obtenerTodasLasCategorias() {
+        String sql = "SELECT * FROM categoria";
         return jdbcTemplate.query(sql, categoriaRowMapper);
-
     }
 
     @Override
-    @Transactional(readOnly = true)
-    public CategoriaDTO obtenerCategoriaPorId(long id){
-        // Sentencia SQL para obtener una categoría por su ID
-        String sql = "SELECT * FROM categoria WHERE id = ?";
+    public List<CategoriaDTO> obtenerCategorias(int pagina) {
+        int pageSize = 10;
+        int offset = (pagina - 1) * pageSize;
+        String sql = "SELECT * FROM categoria LIMIT ? OFFSET ?";
+        return jdbcTemplate.query(sql, categoriaRowMapper, pageSize, offset);
+    }
 
+    @Override
+    public List<CategoriaDTO> obtenerCategoriasPorNombre(String nombre) {
+        String sql = "SELECT * FROM categoria WHERE nombre = ?";
+        return jdbcTemplate.query(sql, categoriaRowMapper, nombre);
+    }
+
+    @Override
+    public List<CategoriaDTO> obtenerCategoriasPorNombreParcial(String nombreParcial) {
+        String sql = "SELECT * FROM categoria WHERE LOWER(nombre) LIKE ?";
+        return jdbcTemplate.query(sql, categoriaRowMapper, "%" + nombreParcial.toLowerCase() + "%");
+    }
+
+    @Override
+    public CategoriaDTO obtenerCategoriaPorId(long id) {
+        String sql = "SELECT * FROM categoria WHERE id = ?";
         try {
-            // Ejecutamos la consulta y mapeamos el resultado a un objeto CategoriaDTO
             return jdbcTemplate.queryForObject(sql, categoriaRowMapper, id);
         } catch (EmptyResultDataAccessException e) {
-            // Si no se encuentra la categoría, lanzamos una excepción personalizada
-            throw new RecursoNoEncontradoException("No se encontro la categoria con ID: " + id, sql, e);
+            throw new RecursoNoEncontradoException("Categoría", "id", id);
         }
     }
 
     @Override
-    @Transactional(readOnly = true)
     public CategoriaDTO obtenerCategoriaPorProducto(long idProducto) {
-        // Sentencia SQL para obtener una categoría por el ID de un producto
-        String sql = "SELECT c.* FROM categoria c " +
-                    "JOIN producto_categoria pc ON c.id = pc.categoria_id " +
-                    "WHERE pc.producto_id = ?";
-
+        String sql = """
+                    SELECT c.id, c.nombre, c.descripcion, c.fecha_registro, c.fecha_actualizacion, c.activa
+                    FROM categoria c
+                    JOIN producto_categoria pc ON c.id = pc.id_categoria
+                    WHERE pc.id_producto = ?
+                """;
         try {
-            // Ejecutamos la consulta y mapeamos el resultado a un objeto CategoriaDTO
             return jdbcTemplate.queryForObject(sql, categoriaRowMapper, idProducto);
         } catch (EmptyResultDataAccessException e) {
-            // Si no se encuentra la categoría, lanzamos una excepción personalizada
-            throw new RecursoNoEncontradoException("No se encontro la categoria para el producto con ID: " + idProducto, sql, e);
+            throw new RecursoNoEncontradoException("Categoría no encontrada para producto", "id_producto", idProducto);
         }
     }
 
     @Override
-    @Transactional
-    public CategoriaDTO crearCategoria(CreateCategoriaDTO categoria) {
-        String sql = "INSERT INTO categoria (nombre, descripcion) VALUES (?, ?)";
+    public CategoriaDTO crearCategoria(CreateCategoriaDTO dto) {
+        String sql = "INSERT INTO categoria (nombre, descripcion, fecha_registro, fecha_actualizacion, activa) VALUES (?, ?, ?, ?, ?)";
         KeyHolder keyHolder = new GeneratedKeyHolder();
-        
-        jdbcTemplate.update(connection -> {
-            PreparedStatement ps = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
-            ps.setString(1, categoria.getNombre());
-            ps.setString(2, categoria.getDescripcion());
+        LocalDateTime ahora = LocalDateTime.now();
+
+        jdbcTemplate.update(con -> {
+            PreparedStatement ps = con.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
+            ps.setString(1, dto.getNombre());
+            ps.setString(2, dto.getDescripcion());
+            ps.setTimestamp(3, Timestamp.valueOf(ahora));
+            ps.setTimestamp(4, Timestamp.valueOf(ahora));
+            ps.setBoolean(5, true); // activa por defecto
             return ps;
         }, keyHolder);
-        
-        long id = Objects.requireNonNull(keyHolder.getKey()).longValue();
-        
-        return CategoriaDTO.builder()
-                .id(id)
-                .nombre(categoria.getNombre())
-                .descripcion(categoria.getDescripcion())
-                .build();
-    }
 
-    @Override
-    @Transactional
-    public void actualizarCategoria(long id, UpdateCategoriaDTO categoria) {
-        if (!existeCategoria(id)) {
-            throw new RecursoNoEncontradoException("Categoría", "id", id);
+        Number key = keyHolder.getKey();
+        if (key == null) {
+            throw new RuntimeException("No se pudo obtener el ID generado para la categoría");
         }
-        
-        String sql = "UPDATE categoria SET nombre = ?, descripcion = ? WHERE id = ?";
-        jdbcTemplate.update(sql, categoria.getNombre(), categoria.getDescripcion(), id);
+
+        return obtenerCategoriaPorId(key.longValue());
     }
 
     @Override
-    @Transactional
+    public void actualizarCategoria(long id, UpdateCategoriaDTO dto) {
+        String sql = "UPDATE categoria SET nombre = ?, descripcion = ?, fecha_actualizacion = ? WHERE id = ?";
+        int filas = jdbcTemplate.update(sql, dto.getNombre(), dto.getDescripcion(),
+                Timestamp.valueOf(LocalDateTime.now()), id);
+
+        if (filas == 0) {
+            throw new RecursoNoEncontradoException("Categoria", "id", id);
+        }
+    }
+
+    @Override
     public void borrarCategoria(long id) {
-        if (!existeCategoria(id)) {
-            throw new RecursoNoEncontradoException("Categoría", "id", id);
-        }
-        
         String sql = "DELETE FROM categoria WHERE id = ?";
-        jdbcTemplate.update(sql, id);
+        int filas = jdbcTemplate.update(sql, id);
+
+        if (filas == 0) {
+            throw new RecursoNoEncontradoException("Categoria", "id", id);
+        }
     }
 
     @Override
-    @Transactional(readOnly = true)
     public boolean existeCategoria(long id) {
-        String sql = "SELECT COUNT(*) FROM categoria WHERE id = ?";
+        String sql = "SELECT COUNT(id) FROM categoria WHERE id = ?";
         Integer count = jdbcTemplate.queryForObject(sql, Integer.class, id);
         return count != null && count > 0;
     }
-    
+
 }

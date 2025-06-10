@@ -38,5 +38,12 @@ public class CategoriaDTO {
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     @Schema(description = "Fecha de registro de la categoria", example = "2023-10-01T12:00:00")
     private LocalDateTime fechaRegistro;
+
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    @Schema(description = "Fecha de actualización de la categoria", example = "2023-10-01T12:00:00")
+    private LocalDateTime fechaActualizacion;
+
+    @Schema(description = "Estado de la categoria, true si está activa, false si está inactiva", example = "true")
+    private boolean activa;
     
 }

@@ -22,21 +22,21 @@ public class CreateUsuarioDTO {
     @Schema(description = "Apellido del usuario", example = "Arbelas")
     private String apellido;
 
-    @NotNull(message = "La clave del usuario no puede estar en blanco")
-    @Schema(description = "Clave del usuario", example = "906533211")
-    private String clave;
+    @NotNull(message = "El correo del usuario no puede estar en blanco")
+    @Schema(description = "Correo electrónico del usuario", example = "mesa@gmail.com")
+    private String correo;
 
     @NotNull(message = "El telefono del usuario no puede estar en blanco")
     @Pattern(regexp = "^[0-9]{9,20}$", message = "El teléfono debe tener entre 9 y 20 dígitos")
     @Schema(description = "Telefono del usuario", example = "1234567890")
     private String telefono;
 
+    @NotNull(message = "La clave del usuario no puede estar en blanco")
+    @Schema(description = "Clave del usuario", example = "906533211")
+    private String clave;
+
     @NotNull(message = "El rol del usuario no puede estar en blanco")
     @Schema(description = "Rol del usuario", example = "cliente")
     private String rol;
-
-    @NotNull(message = "El correo del usuario no puede estar en blanco")
-    @Schema(description = "Correo electrónico del usuario", example = "mesa@gmail.com")
-    private String correo;
 
 }

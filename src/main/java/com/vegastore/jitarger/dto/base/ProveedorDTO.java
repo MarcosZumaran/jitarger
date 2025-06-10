@@ -8,6 +8,7 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Positive;
@@ -23,33 +24,34 @@ import lombok.NoArgsConstructor;
 public class ProveedorDTO {
 
     @Positive(message = "El id del proveedor no puede ser negativo")
+    @NotNull(message = "El id del proveedor no puede estar en blanco")
     @Schema(description = "Identificador del proveedor", example = "1")
     private long id;
 
-    @NotNull(message = "El nombre del proveedor no puede estar en blanco")
+    @NotBlank(message = "El nombre del proveedor no puede estar en blanco")
     @Length(min = 3, max = 50, message = "El nombre del proveedor debe tener entre 3 y 50 caracteres")
     @Schema(description = "Nombre del proveedor", example = "Mesa")
     private String nombreEmpresa;
 
-    @NotNull(message = "La RUC del proveedor no puede estar en blanco")
+    @NotBlank(message = "La RUC del proveedor no puede estar en blanco")
     @Length(min = 10, max = 13, message = "El RUC del proveedor debe tener entre 10 y 13 caracteres")
     @Schema(description = "RUC del proveedor", example = "12345678901")
     private String ruc;
 
-    @NotNull(message = "La dirección del proveedor no puede estar en blanco")
+    @NotBlank(message = "La dirección del proveedor no puede estar en blanco")
     @Length(min = 3, max = 100, message = "La dirección del proveedor debe tener entre 3 y 100 caracteres")
     @Schema(description = "Dirección del proveedor", example = "Calle 123")
     private String direccion;
 
-    @NotNull(message = "El telefono del proveedor no puede estar en blanco")
-    @Length(min = 10, max = 20, message = "El telefono del proveedor debe tener entre 10 y 20 caracteres")
+    @NotBlank(message = "El telefono del proveedor no puede estar en blanco")
+    @Length(min = 9, max = 20, message = "El telefono del proveedor debe tener entre 9 y 20 caracteres")
     @Pattern(regexp = "^[0-9]{9,20}$", message = "El teléfono debe tener entre 9 y 20 dígitos")
     @Schema(description = "Telefono del proveedor", example = "1234567890")
     private String telefono;
 
-    @NotNull(message = "La correo electrónico del proveedor no puede estar en blanco")
+    @NotBlank(message = "La correo electrónico del proveedor no puede estar en blanco")
     @Email(message = "El correo no es válido")
-    @Length(min = 3, max = 100, message = "El correo del proveedor debe tener entre 3 y 100 caracteres")
+    @Length(min = 5, max = 100, message = "El correo del proveedor debe tener entre 5 y 100 caracteres")
     @Schema(description = "Correo electrónico del proveedor", example = "proveedor@gmail.com")
     private String correo;
 
@@ -57,5 +59,13 @@ public class ProveedorDTO {
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     @Schema(description = "Fecha de creación del proveedor", example = "2023-05-01T00:00:00")
     private LocalDateTime fechaRegistro;
+
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    @Schema(description = "Fecha de actualización del proveedor", example = "2023-05-01T00:00:00")
+    private LocalDateTime fechaActualizacion;
+
+    @NotNull(message = "El estado del proveedor no puede estar en blanco")
+    @Schema(description = "Estado del proveedor", example = "true")
+    private boolean activo;
     
 }

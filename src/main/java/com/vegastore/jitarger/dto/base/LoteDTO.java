@@ -1,10 +1,14 @@
 package com.vegastore.jitarger.dto.base;
 
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 
 import org.hibernate.validator.constraints.Length;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+
 import io.swagger.v3.oas.annotations.media.Schema;
+import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
 import lombok.AllArgsConstructor;
@@ -19,6 +23,7 @@ import lombok.NoArgsConstructor;
 public class LoteDTO {
 
     @Positive(message = "El id del lote no puede ser negativo")
+    @NotNull(message = "El id del lote no puede estar en blanco")
     @Schema(description = "Identificador del lote", example = "1")
     private long id;
 
@@ -28,32 +33,47 @@ public class LoteDTO {
     private long idProducto;
 
     @Positive(message = "El id del proveedor no puede ser negativo")
+    @NotNull(message = "El id del proveedor no puede ser nulo")
     @Schema(description = "Identificador del proveedor", example = "1")
     private long idProveedor;
 
-    @NotNull(message = "La unidad de medida del lote no puede ser nula")
-    @Length(min = 3, max = 20, message = "La unidad de medida del lote debe tener entre 3 y 20 caracteres")
+    @NotBlank(message = "La unidad de medida del lote no puede estar en blanco")
+    @Length(min = 1, max = 20, message = "La unidad de medida del lote debe tener entre 1 y 20 caracteres")
     @Schema(description = "Unidad de medida del lote", example = "DOCENAS")
     private String unidadMedidaBase;
 
-    @NotNull(message = "La abreviatura de la unidad de medida del lote no puede ser nula")
+    @NotBlank(message = "La abreviatura de la unidad de medida del lote no puede estar en blanco")
     @Length(min = 1, max = 6, message = "La abreviatura de la unidad de medida del lote debe tener entre 1 y 20 caracteres")
     @Schema(description = "Abreviatura de la unidad de medida del lote", example = "DOC")
-    private String unidadAbreviatura;
+    private String unidadMedidaAbreviatura;
 
     @Positive(message = "El costo del lote no puede ser negativo")
+    @NotNull(message = "El costo del lote no puede ser nulo")
     @Schema(description = "Costo del lote", example = "3.99")
     private BigDecimal costo;
 
     @Positive(message = "El precio de venta del lote no puede ser negativo")
+    @NotNull(message = "El precio de venta del lote no puede ser nulo")
     @Schema(description = "Precio de venta del lote", example = "3.99")
     private BigDecimal precio;
 
     @Positive(message = "La cantidad del lote no puede ser negativa")
+    @NotNull(message = "La cantidad del lote no puede ser nula")
     @Schema(description = "Cantidad del lote", example = "3.250")
     private BigDecimal cantidadInicial;
 
-    @Positive(message = "El disponibles del lote no puede ser negativo")
-    @Schema(description = "Disponibles del lote", example = "3.250")    
-    private BigDecimal cantidadDisponible;
+    @Positive(message = "El stock del lote no puede ser negativo")
+    @NotNull(message = "El stock del lote no puede ser nulo")
+    @Schema(description = "stocks del lote", example = "3.250")    
+    private BigDecimal stock;
+
+    @NotNull(message = "La fecha de creación del lote no puede estar en blanco")
+    @Schema(description = "Fecha de creación del lote", example = "2023-05-01T00:00:00")
+    @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss")
+    private LocalDateTime fechaRegistro;
+
+    @NotNull
+    @Schema(description = "Fecha de actualización del lote", example = "2023-05-01T00:00:00")
+    @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss")
+    private LocalDateTime fechaActualizacion;
 }

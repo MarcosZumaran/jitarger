@@ -5,6 +5,7 @@ import java.math.BigDecimal;
 import org.hibernate.validator.constraints.Length;
 
 import io.swagger.v3.oas.annotations.media.Schema;
+import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
 import lombok.AllArgsConstructor;
@@ -24,32 +25,37 @@ public class CreateLoteDTO {
     private long idProducto;
 
     @Positive(message = "El id del proveedor no puede ser negativo")
+    @NotNull(message = "El id del proveedor no puede ser nulo")
     @Schema(description = "Identificador del proveedor", example = "1")
     private long idProveedor;
 
-    @NotNull(message = "La unidad de medida del lote no puede ser nula")
-    @Length(min = 3, max = 20, message = "La unidad de medida del lote debe tener entre 3 y 20 caracteres")
+    @NotBlank(message = "La unidad de medida del lote no puede estar en blanco")
+    @Length(min = 1, max = 20, message = "La unidad de medida del lote debe tener entre 1 y 20 caracteres")
     @Schema(description = "Unidad de medida del lote", example = "DOCENAS")
     private String unidadMedidaBase;
 
-    @NotNull(message = "La abreviatura de la unidad de medida del lote no puede ser nula")
+    @NotBlank(message = "La abreviatura de la unidad de medida del lote no puede estar en blanco")
     @Length(min = 1, max = 6, message = "La abreviatura de la unidad de medida del lote debe tener entre 1 y 20 caracteres")
     @Schema(description = "Abreviatura de la unidad de medida del lote", example = "DOC")
-    private String unidadAbreviatura;
+    private String unidadMedidaAbreviatura;
 
     @Positive(message = "El costo del lote no puede ser negativo")
+    @NotNull(message = "El costo del lote no puede ser nulo")
     @Schema(description = "Costo del lote", example = "3.99")
     private BigDecimal costo;
 
     @Positive(message = "El precio de venta del lote no puede ser negativo")
+    @NotNull(message = "El precio de venta del lote no puede ser nulo")
     @Schema(description = "Precio de venta del lote", example = "3.99")
     private BigDecimal precio;
 
     @Positive(message = "La cantidad del lote no puede ser negativa")
+    @NotNull(message = "La cantidad del lote no puede ser nula")
     @Schema(description = "Cantidad del lote", example = "3.250")
     private BigDecimal cantidadInicial;
 
-    @Positive(message = "El disponibles del lote no puede ser negativo")
+    @Positive(message = "El stock del lote no puede ser negativo")
+    @NotNull(message = "El stock del lote no puede ser nulo")
     @Schema(description = "Disponibles del lote", example = "3.250")    
-    private BigDecimal cantidadDisponible;
+    private BigDecimal stock;
 }

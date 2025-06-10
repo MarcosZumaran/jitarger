@@ -50,11 +50,11 @@ public class CreateItemCarritoDTO {
     private String nombreProducto;
 
     @NotBlank(message = "La unidad de medida del producto no puede estar en blanco")
-    @Schema(description = "Unidad de medida del producto", example = "DOC")
+    @Schema(description = "Unidad de medida del producto", example = "DOCENA")
     private String unidadmedidaPresentacion;
 
     @NotBlank(message = "El estado del item del carrito no puede estar en blanco")
-    @Schema(description = "Estado del item del carrito", example = "ACTIVO")
-    private String estado;
+    @Schema(description = "Estado del item del carrito", example = "true")
+    private boolean activo;
     
 }

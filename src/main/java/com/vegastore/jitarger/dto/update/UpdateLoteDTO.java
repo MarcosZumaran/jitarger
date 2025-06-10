@@ -26,7 +26,7 @@ public class UpdateLoteDTO {
     @NotNull(message = "La abreviatura de la unidad de medida del lote no puede ser nula")
     @Length(min = 1, max = 6, message = "La abreviatura de la unidad de medida del lote debe tener entre 1 y 20 caracteres")
     @Schema(description = "Abreviatura de la unidad de medida del lote", example = "DOC")
-    private String unidadAbreviatura;
+    private String unidadMedidaAbreviatura;
 
     @Positive(message = "El costo del lote no puede ser negativo")
     @Schema(description = "Costo del lote", example = "3.99")
@@ -42,6 +42,6 @@ public class UpdateLoteDTO {
 
     @Positive(message = "El disponibles del lote no puede ser negativo")
     @Schema(description = "Disponibles del lote", example = "3.250")    
-    private BigDecimal cantidadDisponible;
+    private BigDecimal stock;
 
 }

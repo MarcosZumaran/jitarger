@@ -15,7 +15,7 @@ public interface LoteService {
     LoteDTO obtenerLotePorId(long id);
     LoteDTO crearLote(CreateLoteDTO loteDTO);
     void actualizarLote(long id, UpdateLoteDTO loteDTO);
-    void borrarLote(long id);
+    void eliminarLote(long id);
     boolean existeLote(long id);
     
 }

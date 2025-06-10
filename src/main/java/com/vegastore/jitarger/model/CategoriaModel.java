@@ -67,7 +67,7 @@ public class CategoriaModel {
     @JsonIgnore
     private List<ProductoModel> productos;
 
-    @OneToMany(mappedBy = "subcategoria", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "categoria", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @Schema(description = "Lista de subcategorias de la categoria")
     @JsonIgnore
     private List<SubCategoriaModel> subcategorias;

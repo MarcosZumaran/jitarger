@@ -3,7 +3,6 @@ package com.vegastore.jitarger.implement;
 import java.sql.PreparedStatement;
 import java.sql.Statement;
 import java.util.List;
-import java.util.Objects;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
@@ -12,7 +11,6 @@ import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import com.vegastore.jitarger.dto.base.DetallePedidoDTO;
 import com.vegastore.jitarger.dto.create.CreateDetallePedidoDTO;
@@ -21,7 +19,7 @@ import com.vegastore.jitarger.exception.RecursoNoEncontradoException;
 import com.vegastore.jitarger.service.DetallePedidoService;
 
 @Service
-public class DetallePedidoServiceImpl implements DetallePedidoService{
+public class DetallePedidoServiceImpl implements DetallePedidoService {
 
     @Autowired
     private JdbcTemplate jdbcTemplate;
@@ -39,108 +37,100 @@ public class DetallePedidoServiceImpl implements DetallePedidoService{
             .nombreProducto(rs.getString("nombre_producto"))
             .unidadmedidaPresentacion(rs.getString("unidad_medida_presentacion"))
             .build();
-    
-    // Implementación de los métodos del servicio
+
     @Override
-    @Transactional(readOnly = true)
-    public List<DetallePedidoDTO> obtenerDetallesPedidoPorPedido(long pedidoId){
-        String sql = "SELECT * FROM detalle_pedido WHERE id_pedido = ?";
-        return jdbcTemplate.query(sql, detallePedidoRowMapper, pedidoId);
+    public List<DetallePedidoDTO> obtenerDetallesPedidoPorPedido(int pagina, long pedidoId) {
+        int limite = 10;
+        int offset = (pagina - 1) * limite;
+
+        String sql = """
+                    SELECT * FROM detalle_pedido
+                    WHERE id_pedido = ?
+                    LIMIT ? OFFSET ?
+                """;
+
+        return jdbcTemplate.query(sql, detallePedidoRowMapper, pedidoId, limite, offset);
     }
 
     @Override
-    public DetallePedidoDTO obtenerDetallePedidoPorId(long id){
-        try{
-            String sql = "SELECT * FROM detalle_pedido WHERE id = ?";
+    public DetallePedidoDTO obtenerDetallePedidoPorId(long id) {
+        String sql = "SELECT * FROM detalle_pedido WHERE id = ?";
+        try {
             return jdbcTemplate.queryForObject(sql, detallePedidoRowMapper, id);
-        } catch(EmptyResultDataAccessException e){
-            throw new RecursoNoEncontradoException("Detalle de pedido", "id", id);
+        } catch (EmptyResultDataAccessException e) {
+            throw new RecursoNoEncontradoException("DetallePedido no encontrado", "id", id);
         }
     }
 
     @Override
-    @Transactional(readOnly = true)
-    public DetallePedidoDTO crearDetallePedido(CreateDetallePedidoDTO detallePedidoDTO){
-        String sql = "INSERT INTO detalle_pedido(id_pedido, " + 
-                    "id_producto_presentacion, " + 
-                    "id_lote, " + 
-                    "cantidad, " + 
-                    "precio_unitario, " + 
-                    "subtotal, " + 
-                    "nombre_producto, " + 
-                    "unidad_medida_presentacion)" + 
-                    "VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
-        
+    public DetallePedidoDTO crearDetallePedido(CreateDetallePedidoDTO dto) {
+        String sql = """
+                    INSERT INTO detalle_pedido (
+                        id_pedido, id_producto_presentacion, id_lote, cantidad,
+                        precio_unitario, subtotal, nombre_producto, unidad_medida_presentacion
+                    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+                """;
+
         KeyHolder keyHolder = new GeneratedKeyHolder();
 
-        jdbcTemplate.update(connection -> {
-            PreparedStatement ps = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
-            ps.setLong(1, detallePedidoDTO.getIdPedido());
-            ps.setLong(2, detallePedidoDTO.getIdProductoPresentacion());
-            ps.setLong(3, detallePedidoDTO.getIdLote());
-            ps.setBigDecimal(4, detallePedidoDTO.getCantidad());
-            ps.setBigDecimal(5, detallePedidoDTO.getPrecioUnitario());
-            ps.setBigDecimal(6, detallePedidoDTO.getSubTotal());
-            ps.setString(7, detallePedidoDTO.getNombreProducto());
-            ps.setString(8, detallePedidoDTO.getUnidadmedidaPresentacion());
+        jdbcTemplate.update(con -> {
+            PreparedStatement ps = con.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
+            ps.setLong(1, dto.getIdPedido());
+            ps.setLong(2, dto.getIdProductoPresentacion());
+            ps.setLong(3, dto.getIdLote());
+            ps.setBigDecimal(4, dto.getCantidad());
+            ps.setBigDecimal(5, dto.getPrecioUnitario());
+            ps.setBigDecimal(6, dto.getSubTotal());
+            ps.setString(7, dto.getNombreProducto());
+            ps.setString(8, dto.getUnidadmedidaPresentacion());
             return ps;
         }, keyHolder);
 
-        long id = Objects.requireNonNull(keyHolder.getKey()).longValue();
+        Number key = keyHolder.getKey();
+        if (key == null) {
+            throw new RuntimeException("No se pudo obtener el ID del detalle del pedido creado");
+        }
 
-        return DetallePedidoDTO.builder()
-                .id(id)
-                .idPedido(detallePedidoDTO.getIdPedido())
-                .idProductoPresentacion(detallePedidoDTO.getIdProductoPresentacion())
-                .idLote(detallePedidoDTO.getIdLote())
-                .cantidad(detallePedidoDTO.getCantidad())
-                .precioUnitario(detallePedidoDTO.getPrecioUnitario())
-                .subTotal(detallePedidoDTO.getSubTotal())
-                .nombreProducto(detallePedidoDTO.getNombreProducto())
-                .unidadmedidaPresentacion(detallePedidoDTO.getUnidadmedidaPresentacion())
-                .build();
-    
+        return obtenerDetallePedidoPorId(key.longValue());
     }
 
     @Override
-    @Transactional
-    public void actualizarDetallePedido(long id, UpdateDetallePedidoDTO detallePedidoDTO){
+    public void actualizarDetallePedido(long id, UpdateDetallePedidoDTO dto) {
+
         if (!existeDetallePedido(id)) {
-            throw new RecursoNoEncontradoException("Detalle de pedido", "id", id);
+            throw new RecursoNoEncontradoException("No se encontró detalle del pedido para actualizar", "id", id);
         }
-        String sql = "UPDATE detalle_pedido SET " +
-                    "id_producto_presentacion = ?, " +
-                    "id_lote = ?, " +
-                    "cantidad = ?, " +
-                    "precio_unitario = ?, " +
-                    "subtotal = ?, " +
-                    "nombre_producto = ?, " +
-                    "unidad_medida_presentacion = ? " +
-                    "WHERE id = ?";
-        jdbcTemplate.update(sql, detallePedidoDTO.getIdProductoPresentacion(),
-                            detallePedidoDTO.getIdLote(),
-                            detallePedidoDTO.getCantidad(),
-                            detallePedidoDTO.getPrecioUnitario(),
-                            detallePedidoDTO.getSubTotal(),
-                            detallePedidoDTO.getNombreProducto(),
-                            detallePedidoDTO.getUnidadmedidaPresentacion(),
-                            id);
+
+        String sql = """
+                    UPDATE detalle_pedido SET
+                        id_producto_presentacion = ?, id_lote = ?, cantidad = ?,
+                        precio_unitario = ?, subtotal = ?, nombre_producto = ?, unidad_medida_presentacion = ?
+                    WHERE id = ?
+                """;
+
+        jdbcTemplate.update(sql,
+                dto.getIdProductoPresentacion(),
+                dto.getIdLote(),
+                dto.getCantidad(),
+                dto.getPrecioUnitario(),
+                dto.getSubTotal(),
+                dto.getNombreProducto(),
+                dto.getUnidadmedidaPresentacion(),
+                id);
     }
 
     @Override
-    @Transactional
-    public void borrarDetallePedido(long id){
-        if (!existeDetallePedido(id)) {
-            throw new RecursoNoEncontradoException("Detalle de pedido", "id", id);
-        }
+    public void borrarDetallePedido(long id) {
         String sql = "DELETE FROM detalle_pedido WHERE id = ?";
-        jdbcTemplate.update(sql, id);
+        int deleted = jdbcTemplate.update(sql, id);
+        if (deleted == 0) {
+            throw new RecursoNoEncontradoException("No se encontró detalle del pedido para eliminar", "id", id);
+        }
     }
 
     @Override
-    @Transactional(readOnly = true)
     public boolean existeDetallePedido(long id) {
-        String sql = "SELECT COUNT(*) FROM detalle_pedido WHERE id = ?";
+        String sql = "SELECT COUNT(id) FROM detalle_pedido WHERE id = ?";
         Integer count = jdbcTemplate.queryForObject(sql, Integer.class, id);
         return count != null && count > 0;
     }

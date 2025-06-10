@@ -71,7 +71,7 @@ public class ItemCarritoModel {
     @Schema(description = "Unidad de medida del producto")
     private String unidadmedidaPresentacion;
 
-    @Column(name = "estado")
+    @Column(name = "activo")
     @Schema(description = "Estado del item del carrito")
     private boolean activo;
 

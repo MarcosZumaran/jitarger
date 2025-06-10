@@ -32,4 +32,12 @@ public class CarritoDTO {
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime fechaCreacion;
 
+    @Schema(description = "Fecha del último cambio de estado del carrito")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
+    private LocalDateTime fechaCambioEstado;
+
+    @NotNull(message = "El estado del carrito no puede estar en blanco")
+    @Schema(description = "Estado del carrito", example = "ACTIVO")
+    private String estado;
+
 }

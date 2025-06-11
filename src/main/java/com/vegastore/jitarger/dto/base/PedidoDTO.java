@@ -1,8 +1,6 @@
 package com.vegastore.jitarger.dto.base;
 
 import io.swagger.v3.oas.annotations.media.Schema;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -14,64 +12,57 @@ import java.time.LocalDateTime;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 
+@Data
+@Builder
 @AllArgsConstructor
 @NoArgsConstructor
-@Builder
-@Data
 public class PedidoDTO {
 
-    
-    @Schema(description = "Identificador del pedido", example = "1")
+    @Positive(message = "El id del pedido debe ser un número positivo")
+    @Schema(description = "Identificador único del pedido", example = "1")
     private long id;
 
-    
-    @Schema(description = "Identificador del cliente", example = "1")
+    @Positive(message = "El id del usuario debe ser un número positivo")
+    @Schema(description = "Identificador del usuario que realizó el pedido", example = "1")
     private long idUsuario;
 
-    
-    @Schema(description = "Fecha de creación del pedido", example = "2023-05-01T00:00:00")
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    @Schema(description = "Fecha de creación del pedido", example = "2025-06-10 14:30:00")
     private LocalDateTime fechaRegistro;
 
-    
-    @Schema(description = "Estado del pedido", example = "PENDIENTE")
+    @Schema(description = "Estado actual del pedido", example = "PENDIENTE")
     private String estado;
 
-    
-    @Schema(description = "Total del pedido", example = "3.99")    
+    @Schema(description = "Monto total del pedido", example = "59.99")
     private BigDecimal total;
 
-    
-    @Schema(description = "Subtotal del pedido", example = "3.99")    
+    @Schema(description = "Subtotal antes de descuentos e impuestos", example = "50.00")
     private BigDecimal subtotal;
 
-    
-    @Schema(description = "Descuento del pedido", example = "3.99")    
+    @Schema(description = "Monto de descuento aplicado", example = "5.00")
     private BigDecimal descuento;
 
-    
-    @Schema(description = "Impuestos del pedido", example = "3.99")    
+    @Schema(description = "Monto total de impuestos aplicados", example = "9.99")
     private BigDecimal impuestos;
 
-    @Schema(description = "Metodo de pago del pedido", example = "1")    
+    @Schema(description = "Método de pago utilizado", example = "TARJETA")
     private String metodoPago;
 
-    @Schema(description = "Direccion de entrega del pedido", example = "1")    
+    @Schema(description = "Dirección de entrega del pedido", example = "Av. Las Palmas 123, Lima")
     private String direccionEntrega;
 
-    @Schema(description = "Fecha de confirmacion del pedido", example = "2023-05-01T00:00:00")    
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    @Schema(description = "Fecha en la que se confirmó el pedido", example = "2025-06-10 15:00:00")
     private LocalDateTime fechaConfirmacion;
 
-    @Schema(description = "Fecha de entrega del pedido", example = "2023-05-01T00:00:00")   
-    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss") 
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    @Schema(description = "Fecha estimada o real de entrega", example = "2025-06-12 18:00:00")
     private LocalDateTime fechaEntrega;
 
-    @Schema(description = "Cancelado del pedido", example = "1")    
+    @Schema(description = "Indica si el pedido fue cancelado", example = "false")
     private boolean cancelado;
 
-    @Schema(description = "Fecha de cancelacion del pedido", example = "2023-05-01T00:00:00")   
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    @Schema(description = "Fecha en la que se canceló el pedido, si aplica", example = "2025-06-11 10:00:00")
     private LocalDateTime fechaCancelacion;
-    
 }

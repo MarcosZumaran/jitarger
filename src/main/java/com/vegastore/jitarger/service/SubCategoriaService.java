@@ -12,6 +12,7 @@ public interface SubCategoriaService {
     List<SubCategoriaDTO> obtenerTodasLasSubcategorias();
     List<SubCategoriaDTO> obtenerSubcategoriasPorCategoria(long idCategoria);
     SubCategoriaDTO obtenerSubcategoriaPorId(long id);
+    SubCategoriaDTO obtenerSubCategoriaPorProducto(long idProducto);
     SubCategoriaDTO crearSubCategoria(CreateSubCategoriaDTO subcategoriaDTO);
     void actualizarSubcategoria(long id, UpdateSubCategoriaDTO subcategoriaDTO);
     void borrarSubcategoria(long id);

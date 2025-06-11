@@ -42,7 +42,6 @@ public class CategoriaServiceImpl implements CategoriaService {
             .activa(rs.getBoolean("activa"))
             .build();
 
-
     private List<CategoriaDTO> ejecutarConsultaListaCategorias(String sql, Object... parametros) {
         try {
             log.info("Ejecutando consulta: {}", sql);
@@ -54,17 +53,17 @@ public class CategoriaServiceImpl implements CategoriaService {
     }
 
     @Override
-    public List<CategoriaDTO> obtenerTodasLasCategorias(){
+    public List<CategoriaDTO> obtenerTodasLasCategorias() {
         return ejecutarConsultaListaCategorias("SELECT * FROM categoria");
     }
 
     @Override
-    public List<CategoriaDTO> obtenerCategorias(int pagina){
+    public List<CategoriaDTO> obtenerCategorias(int pagina) {
         return ejecutarConsultaListaCategorias("SELECT * FROM categoria LIMIT 10 OFFSET ?", pagina);
     }
 
     @Override
-    public CategoriaDTO obtenerCategoriaPorId(long id){
+    public CategoriaDTO obtenerCategoriaPorId(long id) {
         try {
             log.info("Ejecutando consulta: SELECT * FROM categoria WHERE id = {}", id);
             return jdbcTemplate.queryForObject("SELECT * FROM categoria WHERE id = ?", categoriaRowMapper, id);
@@ -75,19 +74,24 @@ public class CategoriaServiceImpl implements CategoriaService {
     }
 
     @Override
-    public CategoriaDTO obtenerCategoriaPorProducto(long idProducto){
+    public CategoriaDTO obtenerCategoriaPorProducto(long idProducto) {
         try {
-            log.info("Ejecutando consulta: SELECT * FROM categoria WHERE id_producto = {}", idProducto);
-            return jdbcTemplate.queryForObject("SELECT * FROM categoria WHERE id_producto = ?", categoriaRowMapper, idProducto);
+            log.info("Obteniendo la categoría del producto con id {}", idProducto);
+            String sql = "SELECT id_categoria FROM producto WHERE id_producto = ?";
+            Long idCategoria = jdbcTemplate.queryForObject(sql, Long.class, idProducto);
+
+            String sqlCategoria = "SELECT * FROM categoria WHERE id = ?";
+            log.info("Obteniendo la categoria con id {}", idCategoria);
+            return jdbcTemplate.queryForObject(sqlCategoria, categoriaRowMapper, idCategoria);
         } catch (EmptyResultDataAccessException e) {
-            log.error("No se encontraron categorias");
-            throw new RecursoNoEncontradoException("Categorias", "filtro aplicado", null);
+            log.error("No se ha encontrado la categoría del producto con id {}", idProducto);
+            throw new RecursoNoEncontradoException("Producto", "id", idProducto);
         }
     }
 
     @Override
-    public CategoriaDTO crearCategoria(CreateCategoriaDTO categoriaDTO){
-    
+    public CategoriaDTO crearCategoria(CreateCategoriaDTO categoriaDTO) {
+
         Map<String, Object> fields = new LinkedHashMap<>();
 
         fields.put("nombre", categoriaDTO.getNombre());
@@ -116,13 +120,13 @@ public class CategoriaServiceImpl implements CategoriaService {
             log.error("Error al crear la categoria, clave generada es nula");
             throw new RecursoNoEncontradoException("Categorias", "filtro aplicado", null);
         }
-        
+
         return obtenerCategoriaPorId(key.longValue());
-        
+
     }
 
     @Override
-    public void actualizarCategoria(long id, UpdateCategoriaDTO categoriaDTO){
+    public void actualizarCategoria(long id, UpdateCategoriaDTO categoriaDTO) {
 
         Map<String, Object> fields = new LinkedHashMap<>();
 
@@ -143,11 +147,11 @@ public class CategoriaServiceImpl implements CategoriaService {
         String sql = DynamicSqlBuilder.buildUpdateSql("categoria", fields, "id = ?");
 
         jdbcTemplate.update(sql, id);
-    
+
     }
 
     @Override
-    public void borrarCategoria(long id){
+    public void borrarCategoria(long id) {
         if (!existeCategoria(id)) {
             log.warn("No se encontró la categoria con ID: {}", id);
             throw new RecursoNoEncontradoException("Categorias", "ID", id);
@@ -158,10 +162,10 @@ public class CategoriaServiceImpl implements CategoriaService {
     }
 
     @Override
-    public boolean existeCategoria(long id){
+    public boolean existeCategoria(long id) {
         String sql = DynamicSqlBuilder.buildCountSql("categoria", "id = ?");
         Integer count = jdbcTemplate.queryForObject(sql, Integer.class, id);
         return count != null && count > 0;
     }
-    
+
 }

@@ -71,7 +71,7 @@ public class SubCategoriaServiceImpl implements SubCategoriaService {
 
     @Override
     public SubCategoriaDTO obtenerSubcategoriaPorId(long id) {
-        try{
+        try {
             log.info("Obteniendo subcategoria por ID: {}", id);
             return jdbcTemplate.queryForObject("SELECT * FROM subcategoria WHERE id = ?", rowMapper, id);
         } catch (EmptyResultDataAccessException e) {
@@ -81,7 +81,22 @@ public class SubCategoriaServiceImpl implements SubCategoriaService {
     }
 
     @Override
-    public SubCategoriaDTO crearSubCategoria (CreateSubCategoriaDTO subcategoriaDTO) {
+    public SubCategoriaDTO obtenerSubCategoriaPorProducto(long idProducto) {
+        try {
+            String sql = "SELECT id_subcategoria FROM producto WHERE id_producto = ?";
+            Long idSubcategoria = jdbcTemplate.queryForObject(sql, Long.class, idProducto);
+
+            String sqlSubcategoria = "SELECT * FROM subcategoria WHERE id = ?";
+            return jdbcTemplate.queryForObject(sqlSubcategoria, rowMapper, idSubcategoria);
+
+        } catch (EmptyResultDataAccessException e) {
+            log.error("No se ha encontrado la subcategoría del producto con id {}", idProducto);
+            throw new RecursoNoEncontradoException("Producto", "id", idProducto);
+        }
+    }
+
+    @Override
+    public SubCategoriaDTO crearSubCategoria(CreateSubCategoriaDTO subcategoriaDTO) {
 
         Map<String, Object> fields = new LinkedHashMap<>();
         fields.put("categoria_id", subcategoriaDTO.getIdCategoria());
@@ -113,14 +128,14 @@ public class SubCategoriaServiceImpl implements SubCategoriaService {
         }
 
         return obtenerSubcategoriaPorId(key.longValue());
-        
+
     }
 
     @Override
-    public void actualizarSubcategoria(long id, UpdateSubCategoriaDTO subcategoriaDTO){
+    public void actualizarSubcategoria(long id, UpdateSubCategoriaDTO subcategoriaDTO) {
 
         Map<String, Object> fields = new LinkedHashMap<>();
-        
+
         if (subcategoriaDTO.getIdCategoria() != null) {
             fields.put("categoria_id", subcategoriaDTO.getIdCategoria());
         }
@@ -149,9 +164,9 @@ public class SubCategoriaServiceImpl implements SubCategoriaService {
     }
 
     @Override
-    public void borrarSubcategoria(long id){
+    public void borrarSubcategoria(long id) {
 
-        if(!existeSubcategoria(id)){
+        if (!existeSubcategoria(id)) {
             log.error("Subcategoria con ID {} no encontrado", id);
             throw new RecursoNoEncontradoException("SubCategorias", "filtro aplicado", String.valueOf(id));
         }
@@ -163,10 +178,10 @@ public class SubCategoriaServiceImpl implements SubCategoriaService {
     }
 
     @Override
-    public boolean existeSubcategoria(long id){
+    public boolean existeSubcategoria(long id) {
         String sql = DynamicSqlBuilder.buildCountSql("subcategoria", "id = ?");
         Integer count = jdbcTemplate.queryForObject(sql, Integer.class, id);
         return count != null && count > 0;
     }
-    
+
 }

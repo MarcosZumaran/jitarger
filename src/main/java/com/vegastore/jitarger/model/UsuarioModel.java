@@ -14,8 +14,6 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
-import jakarta.persistence.PrePersist;
-import jakarta.persistence.PreUpdate;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.Pattern;
@@ -102,7 +100,7 @@ public class UsuarioModel {
         this.rol = rol;
         this.fechaRegistro = LocalDateTime.now();
         this.fechaActualizacion = LocalDateTime.now();
-        this.activo = true; // Por defecto el usuario está activo al crearse
+        this.activo = true;
     }
 
 }

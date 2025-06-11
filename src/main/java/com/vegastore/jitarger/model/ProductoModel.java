@@ -16,8 +16,6 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
-import jakarta.persistence.PrePersist;
-import jakarta.persistence.PreUpdate;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -59,35 +57,35 @@ public class ProductoModel {
     @Schema(description = "Id de la subcategoria del producto")
     private SubCategoriaModel subcategoria;
 
-    @Column(name = "estado", length = 20, nullable = false)
+    @Column(name = "estado", length = 20)
     @Schema(description = "Estado del producto, DISPONIBLE o NO DISPONIBLE", example = "DISPONIBLE")
     private String estado;
 
-    @Column(name = "tipo_prenda", length = 50, nullable = false)
+    @Column(name = "tipo_prenda", length = 50)
     @Schema(description = "Tipo de prenda del producto", example = "Camiseta")
     private String tipoPrenda;
 
-    @Column(name = "marca", length = 50, nullable = false)
+    @Column(name = "marca", length = 50)
     @Schema(description = "Marca del producto", example = "Nike")
     private String marca;
 
-    @Column(name = "talla", length = 50, nullable = false)
+    @Column(name = "talla", length = 50)
     @Schema(description = "Talla del producto", example = "M")
     private String talla;
 
-    @Column(name = "color", length = 50, nullable = false)
+    @Column(name = "color", length = 50)
     @Schema(description = "Color del producto", example = "Rojo")
     private String color;
 
-    @Column(name = "genero", length = 50, nullable = false)
+    @Column(name = "genero", length = 50)
     @Schema(description = "Genero del producto", example = "Masculino")
     private String genero;
 
-    @Column(name = "material", length = 50, nullable = false)
+    @Column(name = "material", length = 50)
     @Schema(description = "Material del producto", example = "Lana")
     private String material;
 
-    @Column(name = "temporada", length = 50, nullable = true)
+    @Column(name = "temporada", length = 50)
     @Schema(description = "Temporada del producto", example = "primavera")
     private String temporada;
 
@@ -134,16 +132,4 @@ public class ProductoModel {
         this.fechaActualizacion = LocalDateTime.now();
     }
 
-    @PrePersist
-    public void prePersist() {
-        this.fechaRegistro = LocalDateTime.now();
-        this.fechaActualizacion = LocalDateTime.now();
-        this.estado = "DISPONIBLE"; // Por defecto el estado es activo al crearse
-    }
-
-    @PreUpdate
-    public void preUpdate() {
-        this.fechaActualizacion = LocalDateTime.now();
-    }
-    
 }

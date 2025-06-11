@@ -14,8 +14,6 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
-import jakarta.persistence.PrePersist;
-import jakarta.persistence.PreUpdate;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -39,15 +37,15 @@ public class CategoriaModel {
     @Schema(description = "Identificador de la categoria")
     private long id;
 
-    @Column(name = "nombre", length = 50, nullable = false)
+    @Column(name = "nombre", length = 50)
     @Schema(description = "Nombre de la categoria")
     private String nombre;
 
-    @Column(name = "descripcion", length = 160, nullable = false)
+    @Column(name = "descripcion", length = 160)
     @Schema(description = "Descripción de la categoria")
     private String descripcion;
 
-    @Column(name = "fecha_registro", nullable = false)
+    @Column(name = "fecha_registro")
     @Schema(description = "Fecha de creación de la categoria")
     private LocalDateTime fechaRegistro;
 
@@ -55,7 +53,7 @@ public class CategoriaModel {
     @Schema(description = "Fecha de actualización de la categoria")
     private LocalDateTime fechaActualizacion;
 
-    @Column(name = "activa", nullable = false)
+    @Column(name = "activa")
     @Schema(description = "Estado de la categoria, true si está activa, false si está inactiva")
     private boolean activa;
 
@@ -81,19 +79,5 @@ public class CategoriaModel {
         this.fechaActualizacion = LocalDateTime.now();
         this.activa = true; // Por defecto, la categoria está activa al ser creada
     }
-
-    @PrePersist
-    public void prePersist() {
-        this.fechaRegistro = LocalDateTime.now();
-        this.fechaActualizacion = LocalDateTime.now();
-        this.activa = true; // Por defecto, la categoria está activa al ser creada
-    }
-
-    @PreUpdate
-    public void preUpdate() {
-        this.fechaActualizacion = LocalDateTime.now();
-    }
-
-
     
 }

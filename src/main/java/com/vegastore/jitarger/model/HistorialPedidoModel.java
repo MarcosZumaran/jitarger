@@ -10,7 +10,6 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
-import jakarta.persistence.PrePersist;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -38,19 +37,19 @@ public class HistorialPedidoModel {
     @Schema(description = "Identificador del pedido")
     private PedidoModel pedido;
 
-    @Column(name = "estado_anterior", length = 50, nullable = false)
+    @Column(name = "estado_anterior", length = 50)
     @Schema(description = "Estado del pedido")
     private String estadoAnterior;
 
-    @Column(name = "estado_nuevo", length = 50, nullable = false)
+    @Column(name = "estado_nuevo", length = 50)
     @Schema(description = "Estado nuevo del pedido")
     private String estadoNuevo;
 
-    @Column(name = "fecha_cambio", nullable = false)
+    @Column(name = "fecha_cambio")
     @Schema(description = "Fecha de cambio del estado del pedido")
     private LocalDateTime fechaCambio;
 
-    @Column(name = "comentario", length = 255, nullable = true)
+    @Column(name = "comentario", length = 255)
     @Schema(description = "Comentario del cambio de estado")
     private String comentario;
 
@@ -62,11 +61,6 @@ public class HistorialPedidoModel {
         this.estadoNuevo = estadoNuevo;
         this.fechaCambio = LocalDateTime.now();
         this.comentario = comentario;
-    }
-
-    @PrePersist
-    public void prePersist() {
-        this.fechaCambio = LocalDateTime.now();
     }
 
 }

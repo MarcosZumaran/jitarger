@@ -39,5 +39,5 @@ public interface PedidoService {
     long contarPedidosPorUsuario(long idUsuario);
 
     long contarPedidosPorUsuarioYEstado(long idUsuario, String estado);
-    
+
 }

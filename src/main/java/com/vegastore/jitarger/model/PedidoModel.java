@@ -17,8 +17,6 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
-import jakarta.persistence.PrePersist;
-import jakarta.persistence.PreUpdate;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -57,15 +55,15 @@ public class PedidoModel {
     @Schema(description = "Subtotal del pedido")
     private BigDecimal subtotal;
 
-    @Column(name = "impuestos", precision = 10, scale = 2, nullable = true)
+    @Column(name = "impuestos", precision = 10, scale = 2)
     @Schema(description = "impuestos del pedido")
     private BigDecimal impuestos;
 
-    @Column(name = "metodo_pago", length = 50, nullable = false)
+    @Column(name = "metodo_pago", length = 50)
     @Schema(description = "Metodo de pago del pedido")
     private String metodoPago;
 
-    @Column(name = "direccion_entrega", length = 255, nullable = false)
+    @Column(name = "direccion_entrega", length = 255)
     @Schema(description = "Direccion de entrega del pedido")
     private String direccionEntrega;
 
@@ -73,7 +71,7 @@ public class PedidoModel {
     @Schema(description = "Fecha de entrega del pedido")
     private LocalDateTime fechaEntrega;
 
-    @Column(name = "estado", length = 50, nullable = false)
+    @Column(name = "estado", length = 50)
     @Schema(description = "Estado del pedido, puede ser 'PENDIENTE', 'ENVIADO', 'ENTREGADO', 'CANCELADO'")
     private String estado;
 
@@ -104,18 +102,6 @@ public class PedidoModel {
         this.fechaRegistro = LocalDateTime.now();
         this.fechaActualizacion = LocalDateTime.now();
         this.estado = "PENDIENTE"; // Por defecto, el estado del pedido es PENDIENTE al crearlo
-    }
-
-    @PrePersist
-    public void prePersist() {
-        this.fechaRegistro = LocalDateTime.now();
-        this.fechaActualizacion = LocalDateTime.now();
-        this.estado = "PENDIENTE"; // Por defecto, el estado del pedido es PENDIENTE al crearlo
-    }
-
-    @PreUpdate
-    public void preUpdate() {
-        this.fechaActualizacion = LocalDateTime.now();
     }
 
 }

@@ -61,11 +61,11 @@ public class DetallePedidoModel {
     @Schema(description = "Precio subtotal del detalle del pedido")
     private BigDecimal subTotal;
 
-    @Column(name = "nombre_producto", length = 50, nullable = false)
+    @Column(name = "nombre_producto", length = 50)
     @Schema(description = "Nombre del producto")
     private String nombreProducto;
 
-    @Column(name = "unidad_medida_presentacion", length = 20, nullable = false)
+    @Column(name = "unidad_medida_presentacion", length = 20)
     @Schema(description = "Unidad de medida del producto")
     private String unidadmedidaPresentacion;
 

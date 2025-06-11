@@ -15,8 +15,6 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
-import jakarta.persistence.PrePersist;
-import jakarta.persistence.PreUpdate;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -50,31 +48,31 @@ public class LoteModel {
     @Schema(description = "Id del proveedor del producto")
     private ProveedorModel proveedor;
 
-    @Column(name = "unidad_medida_base", length = 20, nullable = false)
+    @Column(name = "unidad_medida_base", length = 20)
     @Schema(description = "Unidad de medida del lote")
     private String unidadMedidaBase;
 
-    @Column(name = "unidad_medida_abreviatura", length = 6, nullable = false)
+    @Column(name = "unidad_medida_abreviatura", length = 6)
     @Schema(description = "Abreviatura de la unidad de medida del lote")
     private String unidadMedidaAbreviatura;
 
-    @Column(name = "costo", precision = 10, scale = 2, nullable = false)
+    @Column(name = "costo", precision = 10, scale = 2)
     @Schema(description = "Costo del lote")
     private BigDecimal costo;
 
-    @Column(name = "precio", precision = 10, scale = 2, nullable = false)
+    @Column(name = "precio", precision = 10, scale = 2)
     @Schema(description = "Precio de venta del lote")
     private BigDecimal precio;
 
-    @Column(name = "cantidad_inicial", precision = 10, scale = 3, nullable = false)
+    @Column(name = "cantidad_inicial", precision = 10, scale = 3)
     @Schema(description = "Cantidad del lote")
     private BigDecimal cantidadInicial;
 
-    @Column(name = "stock", precision = 10, scale = 3, nullable = false)
+    @Column(name = "stock", precision = 10, scale = 3)
     @Schema(description = "Disponibles del lote")
     private BigDecimal stock;
 
-    @Column(name =  "fecha_registro", nullable = false)
+    @Column(name =  "fecha_registro")
     @Schema(description = "Fecha de creación del lote")
     private LocalDateTime fechaRegistro;
 
@@ -99,17 +97,6 @@ public class LoteModel {
         this.cantidadInicial = cantidadInicial;
         this.stock = cantidadInicial; // Inicialmente el stock es igual a la cantidad inicial
         this.fechaRegistro = LocalDateTime.now();
-        this.fechaActualizacion = LocalDateTime.now();
-    }
-
-    @PrePersist
-    public void prePersist() {
-        this.fechaRegistro = LocalDateTime.now();
-        this.fechaActualizacion = LocalDateTime.now();
-    }
-
-    @PreUpdate
-    public void preUpdate() {
         this.fechaActualizacion = LocalDateTime.now();
     }
 

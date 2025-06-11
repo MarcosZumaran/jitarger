@@ -8,8 +8,6 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
-import jakarta.persistence.PrePersist;
-import jakarta.persistence.PreUpdate;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.Pattern;
@@ -35,29 +33,29 @@ public class ProveedorModel {
     @Schema(description = "Identificador del proveedor")
     private long id;
 
-    @Column(name = "nombre", length = 50, nullable = false)
+    @Column(name = "nombre", length = 50)
     @Schema(description = "Nombre del proveedor")
     private String nombreEmpresa;
 
-    @Column(name = "ruc", length = 11, nullable = false)
+    @Column(name = "ruc", length = 11)
     @Schema(description = "RUC del proveedor")
     private String ruc;
 
-    @Column(name = "direccion", length = 50, nullable = false)
+    @Column(name = "direccion", length = 50)
     @Schema(description = "Dirección del proveedor")
     private String direccion;
 
-    @Column(name = "telefono", length = 50, nullable = false)
+    @Column(name = "telefono", length = 50)
     @Pattern(regexp = "^[0-9]{9,20}$", message = "El teléfono debe tener entre 9 y 20 dígitos")
     @Schema(description = "Telefono del proveedor")
     private String telefono;
 
-    @Column(name = "correo", length = 100, nullable = false)
+    @Column(name = "correo", length = 100)
     @Schema(description = "Correo electrónico del proveedor")
     @Email(message = "El correo no es válido")
     private String correo;
 
-    @Column(name = "fecha_registro", nullable = false)
+    @Column(name = "fecha_registro")
     @Schema(description = "Fecha de creación del proveedor")
     private LocalDateTime fechaRegistro;
 
@@ -65,7 +63,7 @@ public class ProveedorModel {
     @Schema(description = "Fecha de actualización del proveedor")
     private LocalDateTime fechaActualizacion;
 
-    @Column(name = "activo", nullable = false)
+    @Column(name = "activo")
     @Schema(description = "Estado del proveedor, true si está activo, false si está inactivo")
     private boolean activo;
 
@@ -86,18 +84,6 @@ public class ProveedorModel {
         this.fechaRegistro = LocalDateTime.now();
         this.fechaActualizacion = LocalDateTime.now();
         this.activo = true; // Por defecto, el proveedor está activo al crearlo
-    }
-
-    @PrePersist
-    public void prePersist() {
-        this.fechaRegistro = LocalDateTime.now();
-        this.fechaActualizacion = LocalDateTime.now();
-        this.activo = true; // Por defecto, el proveedor está activo al crearlo
-    }
-
-    @PreUpdate
-    public void preUpdate() {
-        this.fechaActualizacion = LocalDateTime.now();
     }
 
 }

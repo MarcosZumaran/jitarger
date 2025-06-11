@@ -11,7 +11,6 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
-import jakarta.persistence.PrePersist;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -55,7 +54,7 @@ public class ItemCarritoModel {
     @Schema(description = "Cantidad del item del carrito")
     private BigDecimal cantidad;
 
-    @Column(name = "fecha_agregado", nullable = false)
+    @Column(name = "fecha_agregado")
     @Schema(description = "Fecha de agregado del item al carrito")
     private LocalDateTime fechaAgregado;
 
@@ -63,11 +62,11 @@ public class ItemCarritoModel {
     @Schema(description = "Precio actual del item del carrito")
     private BigDecimal precioActual;
 
-    @Column(name = "nombre_producto", length = 50, nullable = false)
+    @Column(name = "nombre_producto", length = 50)
     @Schema(description = "Nombre del producto")
     private String nombreProducto;
 
-    @Column(name = "unidad_medida_presentacion", length = 20, nullable = false)
+    @Column(name = "unidad_medida_presentacion", length = 20)
     @Schema(description = "Unidad de medida del producto")
     private String unidadmedidaPresentacion;
 
@@ -89,10 +88,4 @@ public class ItemCarritoModel {
         this.activo = true; // Por defecto el item está activo al ser agregado
     }
 
-    @PrePersist
-    public void prePersist() {
-        this.fechaAgregado = LocalDateTime.now();
-        this.activo = true; // Por defecto el item está activo al ser agregado
-    }
-    
 }

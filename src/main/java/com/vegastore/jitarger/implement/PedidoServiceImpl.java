@@ -185,8 +185,10 @@ public class PedidoServiceImpl implements PedidoService {
         if (dto.getTotal() != null)
             fields.put("total", dto.getTotal());
 
-        if (fields.isEmpty())
+        if (fields.isEmpty()){
+            log.warn("No se proporcionaron campos para actualizar el pedido con ID: {}", id);
             return;
+        }
 
         String sql = DynamicSqlBuilder.buildUpdateSql("pedido", fields, "id = ?");
 

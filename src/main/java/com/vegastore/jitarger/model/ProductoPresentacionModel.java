@@ -11,8 +11,6 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
-import jakarta.persistence.PrePersist;
-import jakarta.persistence.PreUpdate;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -40,23 +38,23 @@ public class ProductoPresentacionModel {
     @Schema(description = "Id del producto")
     private ProductoModel producto;
 
-    @Column(name = "unidad_medida", length = 20, nullable = false)
+    @Column(name = "unidad_medida", length = 20)
     @Schema(description = "Unidad de medida de la presentación del producto")
     private String unidadMedida;
 
-    @Column(name = "unidad_abreviatura", length = 6, nullable = false)
+    @Column(name = "unidad_abreviatura", length = 6)
     @Schema(description = "Abreviatura de la unidad de medida de la presentación del producto")
     private String unidadAbreviatura;
 
-    @Column(name = "equivalencia", nullable = false, precision = 10, scale = 3)
+    @Column(name = "equivalencia", precision = 10, scale = 3)
     @Schema(description = "Equivalencia de la presentación del producto en referencia a la unidad de medida base del lote")
     private BigDecimal equivalencia;
 
-    @Column(name = "disponible", nullable = false)
+    @Column(name = "disponible")
     @Schema(description = "Indica si la presentación del producto está disponible")
     private boolean disponible;
 
-    @Column(name = "fecha_creacion", nullable = false)
+    @Column(name = "fecha_creacion")
     @Schema(description = "Fecha de creación de la presentación del producto")
     private LocalDateTime fechaCreacion;
 
@@ -75,18 +73,5 @@ public class ProductoPresentacionModel {
         this.fechaCreacion = LocalDateTime.now();
         this.fechaActualizacion = LocalDateTime.now();
     }
-
-    @PrePersist
-    public void prePersist() {
-        this.fechaCreacion = LocalDateTime.now();
-        this.fechaActualizacion = LocalDateTime.now();
-        this.disponible = true;
-    }
-
-    @PreUpdate
-    public void preUpdate() {
-        this.fechaActualizacion = LocalDateTime.now();
-    }
-
         
 }

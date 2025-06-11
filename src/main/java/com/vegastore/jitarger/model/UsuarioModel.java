@@ -41,41 +41,41 @@ public class UsuarioModel {
     @Schema(description = "Identificador del usuario")
     private long id;
 
-    @Column(name = "nombre", length = 50, nullable = false)
+    @Column(name = "nombre", length = 50)
     @Schema(description = "Nombre del usuario")
     private String nombre;
 
-    @Column(name = "apellido", length = 50, nullable = false)
+    @Column(name = "apellido", length = 50)
     @Schema(description = "Apellido del usuario")
     private String apellido;
 
-    @Column(name = "email", length = 100, nullable = false)
+    @Column(name = "email", length = 100)
     @Schema(description = "Correo electrónico del usuario")
     @Email(message = "El correo no es válido")
     private String correo;
 
-    @Column(name = "telefono", length = 50, nullable = false)
+    @Column(name = "telefono", length = 50)
     @Pattern(regexp = "^[0-9]{9,20}$", message = "El teléfono debe tener entre 9 y 20 dígitos")
     @Schema(description = "Telefono del usuario")
     private String telefono;
 
-    @Column(name = "clave", length = 50, nullable = false)
+    @Column(name = "clave", length = 50)
     @Schema(description = "Clave del usuario")
     private String clave;
 
-    @Column(name = "rol", length = 50, nullable = false)
+    @Column(name = "rol", length = 50)
     @Schema(description = "Rol del usuario,  o cliente")
     private String rol;
 
-    @Column(name = "fecha_registro", nullable = false)
+    @Column(name = "fecha_registro")
     @Schema(description = "Fecha de creación del usuario")
     private LocalDateTime fechaRegistro;
 
-    @Column(name = "fecha_actualizacion", nullable = false)
+    @Column(name = "fecha_actualizacion")
     @Schema(description = "Fecha de actualización del usuario")
     private LocalDateTime fechaActualizacion;
 
-    @Column(name = "activo", nullable = false)
+    @Column(name = "activo")
     @Schema(description = "Estado del usuario, activo o inactivo. Activo significa que el usuario puede realizar acciones en la aplicación")
     private boolean activo;
 
@@ -103,18 +103,6 @@ public class UsuarioModel {
         this.fechaRegistro = LocalDateTime.now();
         this.fechaActualizacion = LocalDateTime.now();
         this.activo = true; // Por defecto el usuario está activo al crearse
-    }
-
-    @PrePersist
-    public void prePersist() {
-        this.fechaRegistro = LocalDateTime.now();
-        this.fechaActualizacion = LocalDateTime.now();
-        this.activo = true; // Por defecto el usuario está activo al crearse
-    }
-
-    @PreUpdate
-    public void preUpdate() {
-        this.fechaActualizacion = LocalDateTime.now();
     }
 
 }

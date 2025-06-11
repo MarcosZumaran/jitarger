@@ -16,8 +16,6 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
-import jakarta.persistence.PrePersist;
-import jakarta.persistence.PreUpdate;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -39,17 +37,17 @@ public class ProductoImagenModel {
 
     // Foreign key
     @ManyToOne
-    @JoinColumn(name = "id_producto", nullable = false)
+    @JoinColumn(name = "id_producto")
     private ProductoModel producto;
 
-    @Column(name = "url", nullable = false, length = 255)
+    @Column(name = "url", length = 255)
     private String url;
 
-    @Column(name = "tipo", nullable = false)
+    @Column(name = "tipo")
     @Schema(description = "Tipo de imagen del producto, puede ser PORTADA o GALERIA")
     private String tipo;
 
-    @Column(name =  "fecha_creacion", nullable = false)
+    @Column(name =  "fecha_creacion")
     @Schema(description = "Fecha de creación de la imagen del producto")
     private LocalDateTime fechaCreacion;
 
@@ -71,17 +69,6 @@ public class ProductoImagenModel {
         this.url = url;
         this.tipo = tipo;
         this.fechaCreacion = LocalDateTime.now();
-        this.fechaActualizacion = LocalDateTime.now();
-    }
-
-    @PrePersist
-    public void prePersist() {
-        this.fechaCreacion = LocalDateTime.now();
-        this.fechaActualizacion = LocalDateTime.now();
-    }
-
-    @PreUpdate
-    public void preUpdate() {
         this.fechaActualizacion = LocalDateTime.now();
     }
     

@@ -14,8 +14,6 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
-import jakarta.persistence.PrePersist;
-import jakarta.persistence.PreUpdate;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -40,15 +38,15 @@ public class SubCategoriaModel {
     @JoinColumn(name = "id_categoria")
     private CategoriaModel categoria;
 
-    @Column(name = "nombre", length = 50, nullable = false)
+    @Column(name = "nombre", length = 50)
     @Schema(description = "Nombre de la subcategoria")
     private String nombre;
 
-    @Column(name = "descripcion", length = 160, nullable = false)
+    @Column(name = "descripcion", length = 160)
     @Schema(description = "Descripción de la subcategoria")
     private String descripcion;
 
-    @Column(name = "fecha_registro", nullable = false)
+    @Column(name = "fecha_registro")
     @Schema(description = "Fecha de creación de la subcategoria")
     private LocalDateTime fechaRegistro;
 
@@ -56,7 +54,7 @@ public class SubCategoriaModel {
     @Schema(description = "Fecha de actualización de la subcategoria")
     private LocalDateTime fechaActualizacion;
 
-    @Column(name = "activa", nullable = false)
+    @Column(name = "activa")
     @Schema(description = "Estado de la subcategoria, true si está activa, false si está inactiva")
     private boolean activa;
 
@@ -73,18 +71,6 @@ public class SubCategoriaModel {
         this.descripcion = descripcion;
         this.fechaRegistro = LocalDateTime.now();
         this.activa = true; // Por defecto, la subcategoria está activa al crearla
-    }
-
-    @PrePersist
-    public void prePersist() {
-        this.fechaRegistro = LocalDateTime.now();
-        this.fechaActualizacion = LocalDateTime.now();
-        this.activa = true; // Por defecto, la subcategoria está activa al crearse
-    }
-
-    @PreUpdate
-    public void preUpdate() {
-        this.fechaActualizacion = LocalDateTime.now();
     }
 
 }

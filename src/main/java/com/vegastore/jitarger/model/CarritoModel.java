@@ -16,8 +16,6 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
-import jakarta.persistence.PrePersist;
-import jakarta.persistence.PreUpdate;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -47,7 +45,7 @@ public class CarritoModel {
     @Schema(description = "Id del usuario")
     private UsuarioModel usuario;
 
-    @Column(name = "fecha_creacion", nullable = false)
+    @Column(name = "fecha_creacion")
     @Schema(description = "Fecha de creación del carrito")
     private LocalDateTime fechaCreacion;
 
@@ -55,7 +53,7 @@ public class CarritoModel {
     @Schema(description = "Fecha del último cambio de estado del carrito")
     private LocalDateTime fechaCambioEstado;
 
-    @Column(name = "estado", length = 20, nullable = false)
+    @Column(name = "estado", length = 20)
     @Schema(description = "Estado del carrito, puede ser 'ACTIVO', 'PROCESADO' o 'CANCELADO'")
     private String estado;
 
@@ -71,18 +69,6 @@ public class CarritoModel {
         this.usuario = usaurio;
         this.estado = estado;
         this.fechaCreacion = LocalDateTime.now();
-        this.fechaCambioEstado = LocalDateTime.now();
-    }
-
-    @PrePersist
-    public void prePersist() {
-        this.fechaCreacion = LocalDateTime.now();
-        this.fechaCambioEstado = LocalDateTime.now();
-        this.estado = "ACTIVO";
-    }
-
-    @PreUpdate
-    public void preUpdate() {
         this.fechaCambioEstado = LocalDateTime.now();
     }
 

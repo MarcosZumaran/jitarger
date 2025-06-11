@@ -15,9 +15,12 @@ public interface ProductoImagenService {
     List<ProductoImagenDTO> obtenerTodasLasImagenesPorTipo(String tipo);
     List<ProductoImagenDTO> obtenerImagenesPorTipo(int pagina, String tipo);
     ProductoImagenDTO obtenerImagenPorId(long id);
-    long crearImagen(CreateProductoImagenDTO imagenDTO);
+    ProductoImagenDTO crearImagen(CreateProductoImagenDTO imagenDTO);
     void actualizarImagen(long id, UpdateProductoImagenDTO imagenDTO);
     void borrarImagen(long id);
     boolean existeImagen(long id);
-    
+    long contarImagenes();
+    long contarImagenesPorTipo(String tipo);
+    long contarImagenesPorProducto(long idProducto);    
+
 }

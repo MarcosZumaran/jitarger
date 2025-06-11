@@ -32,10 +32,6 @@ public class UpdateLoteDTO {
     @Schema(description = "Costo del lote", example = "3.99")
     private BigDecimal costo;
 
-    @Positive(message = "El precio de venta del lote no puede ser negativo")
-    @Schema(description = "Precio de venta del lote", example = "3.99")
-    private BigDecimal precio;
-
     @Positive(message = "La cantidad del lote no puede ser negativa")
     @Schema(description = "Cantidad del lote", example = "3.250")
     private BigDecimal cantidadInicial;

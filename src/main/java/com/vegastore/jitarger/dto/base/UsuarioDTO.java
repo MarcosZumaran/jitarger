@@ -1,5 +1,7 @@
 package com.vegastore.jitarger.dto.base;
 
+import java.time.LocalDateTime;
+
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
@@ -52,10 +54,14 @@ public class UsuarioDTO {
 
     @NotNull(message = "El fecha de creación del usuario no puede estar en blanco")
     @Schema(description = "Fecha de creación del usuario", example = "2023-05-01T00:00:00")
-    private String fechaRegistro;
+    private LocalDateTime fechaRegistro;
 
     @NotNull(message = "El fecha de actualización del usuario no puede estar en blanco")
     @Schema(description = "Fecha de actualización del usuario", example = "2023-05-01T00:00:00")
-    private String fechaActualizacion;
+    private LocalDateTime fechaActualizacion;
+
+    @NotNull(message = "El estado del usuario no puede estar en blanco")
+    @Schema(description = "Estado del usuario", example = "true")
+    private boolean activo;
     
 }

@@ -42,4 +42,8 @@ public class UpdateUsuarioDTO {
     @Schema(description = "Rol del usuario", example = "cliente")
     private String rol;
 
+    @Nullable
+    @Schema(description = "Estado del usuario", example = "ACTIVO")
+    private Boolean activo;
+
 }

@@ -47,7 +47,7 @@ public class UsuarioModel {
     @Schema(description = "Apellido del usuario")
     private String apellido;
 
-    @Column(name = "email", length = 100)
+    @Column(name = "correo", length = 100)
     @Schema(description = "Correo electrónico del usuario")
     @Email(message = "El correo no es válido")
     private String correo;

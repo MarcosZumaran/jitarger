@@ -17,15 +17,10 @@ public interface UsuarioService {
     List<UsuarioDTO> obtenerTodosLosUsuarioPorNombreParcial(String nombreParcial);
     List<UsuarioDTO> obtenerTodosLosUsuariosPorRol(String rol);
     UsuarioDTO obtenerUsuarioPorId(long id);
-    UsuarioDTO obtenerUsuarioPorCorreo(String correo);
-    UsuarioDTO obtenerUsuarioPorTelefono(String telefono);
-    long crearUsuario(CreateUsuarioDTO usuarioDTO);
+    UsuarioDTO crearUsuario(CreateUsuarioDTO usuarioDTO);
     void actualizarUsuario(long id, UpdateUsuarioDTO usuarioDTO);
     void cambiarClave(long id, String nuevaClave);
     void borrarUsuario(long id);
     boolean existeUsuario(long id);
-    boolean existeUsuarioPorCorreo(String correo);
-    boolean existeUsuarioPorTelefono(String telefono);
-    boolean validarCredenciales(String correo, String clave);
     
 }

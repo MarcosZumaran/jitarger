@@ -50,6 +50,10 @@ public class ProductoPresentacionModel {
     @Schema(description = "Equivalencia de la presentación del producto en referencia a la unidad de medida base del lote")
     private BigDecimal equivalencia;
 
+    @Column(name = "precio", precision = 10, scale = 2)
+    @Schema(description = "Precio de la presentación del producto")
+    private BigDecimal precio;
+
     @Column(name = "disponible")
     @Schema(description = "Indica si la presentación del producto está disponible")
     private boolean disponible;

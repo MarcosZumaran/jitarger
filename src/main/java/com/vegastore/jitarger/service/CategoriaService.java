@@ -10,8 +10,6 @@ public interface CategoriaService {
 
     List<CategoriaDTO> obtenerTodasLasCategorias();
     List<CategoriaDTO> obtenerCategorias(int pagina);
-    List<CategoriaDTO> obtenerCategoriasPorNombre(String nombre);
-    List<CategoriaDTO> obtenerCategoriasPorNombreParcial(String nombreParcial);
     CategoriaDTO obtenerCategoriaPorId(long id);
     CategoriaDTO obtenerCategoriaPorProducto(long idProducto);
     CategoriaDTO crearCategoria(CreateCategoriaDTO categoriaDTO);

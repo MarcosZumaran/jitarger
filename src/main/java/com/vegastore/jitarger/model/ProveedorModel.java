@@ -33,7 +33,7 @@ public class ProveedorModel {
     @Schema(description = "Identificador del proveedor")
     private long id;
 
-    @Column(name = "nombre", length = 50)
+    @Column(name = "nombre_empresa", length = 50)
     @Schema(description = "Nombre del proveedor")
     private String nombreEmpresa;
 

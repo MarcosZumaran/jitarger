@@ -16,6 +16,7 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
+import org.springframework.stereotype.Service;
 
 import com.vegastore.jitarger.dto.base.ProductoImagenDTO;
 import com.vegastore.jitarger.dto.create.CreateProductoImagenDTO;
@@ -24,6 +25,7 @@ import com.vegastore.jitarger.exception.RecursoNoEncontradoException;
 import com.vegastore.jitarger.service.ProductoImagenService;
 import com.vegastore.jitarger.util.DynamicSqlBuilder;
 
+@Service
 public class ProductoImagenServiceImpl implements ProductoImagenService {
 
     @Autowired

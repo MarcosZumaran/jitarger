@@ -10,12 +10,9 @@ public interface SubCategoriaService {
 
     List<SubCategoriaDTO> obtenerSubcategorias(int pagina);
     List<SubCategoriaDTO> obtenerTodasLasSubcategorias();
-    List<SubCategoriaDTO> obtenerSubcategoriasPorNombre(String nombre);
-    List<SubCategoriaDTO> obtenerSubcategoriasPorNombreParcial(String nombreParcial);
-    List<SubCategoriaDTO> obtenerSubcategoriasPorCategoria(long idCategoria, int pagina);
-    List<SubCategoriaDTO> obtenerTodasLasSubcategoriasPorCategoria(long idCategoria);
+    List<SubCategoriaDTO> obtenerSubcategoriasPorCategoria(long idCategoria);
     SubCategoriaDTO obtenerSubcategoriaPorId(long id);
-    SubCategoriaDTO crearSubcategoria(CreateSubCategoriaDTO subcategoriaDTO);
+    SubCategoriaDTO crearSubCategoria(CreateSubCategoriaDTO subcategoriaDTO);
     void actualizarSubcategoria(long id, UpdateSubCategoriaDTO subcategoriaDTO);
     void borrarSubcategoria(long id);
     boolean existeSubcategoria(long id);

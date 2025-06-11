@@ -19,6 +19,8 @@ public interface ProductoService {
     List<ProductoDTO> obtenerTodosLosProductosPorEstado(String estado);
     List<ProductoDTO> obtenerTodosLosProductosPorNombre(String nombre);
     List<ProductoDTO> obetnerTodosLosProductosPorNombreParcial(String nombre);
+    List<ProductoDTO> obtenerProductosPorCategoria(int pagina, long idCategoria);
+    List<ProductoDTO> obtenerProductosPorSubcategoria(int pagina, long idSubcategoria);
     List<ProductoDTO> obtenerProductosPorMarca(int pagina, String marca);
     List<ProductoDTO> obtenerProductosPorTalla(int pagina, String talla);
     List<ProductoDTO> obtenerProductosPorColor(int pagina, String color);

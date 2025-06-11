@@ -12,6 +12,7 @@ public interface ProveedorService {
     List<ProveedorDTO> obtenerTodosLosProveedores();
     List<ProveedorDTO> obtenerProveedoresPorNombre(String nombre);
     List<ProveedorDTO> obtenerProveedoresPorNombreParcial(String nombre);
+    List<ProveedorDTO> obtenerProveedoresPorActivo(boolean activo);
     ProveedorDTO obtenerProveedorPorId(long id);
     ProveedorDTO obtenerProveedorPorRuc(String ruc);
     ProveedorDTO obtenerProveedorPorRucParcial(String rucParcial);
@@ -20,6 +21,5 @@ public interface ProveedorService {
     void actualizarProveedor(long id, UpdateProveedorDTO proveedorDTO);
     void borrarProveedor(long id);
     boolean existeProveedor(long id);
-    boolean existeProveedorPorRuc(String ruc);
     
 }

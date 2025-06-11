@@ -3,8 +3,12 @@ package com.vegastore.jitarger.implement;
 import java.sql.PreparedStatement;
 import java.sql.Statement;
 import java.sql.Timestamp;
-import java.util.List;  
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -17,12 +21,15 @@ import com.vegastore.jitarger.dto.base.HistorialPedidoDTO;
 import com.vegastore.jitarger.dto.create.CreateHistorialPedidoDTO;
 import com.vegastore.jitarger.exception.RecursoNoEncontradoException;
 import com.vegastore.jitarger.service.HistorialPedidoService;
+import com.vegastore.jitarger.util.DynamicSqlBuilder;
 
 @Service
 public class HistorialPedidoServiceImpl implements HistorialPedidoService {
 
     @Autowired
     private JdbcTemplate jdbcTemplate;
+
+    private static final Logger log = LoggerFactory.getLogger(HistorialPedidoServiceImpl.class);
 
     private final RowMapper<HistorialPedidoDTO> historialPedidoRowMapper = (rs, rowNum) -> HistorialPedidoDTO.builder()
             .id(rs.getLong("id"))
@@ -33,89 +40,96 @@ public class HistorialPedidoServiceImpl implements HistorialPedidoService {
             .comentario(rs.getString("comentario"))
             .build();
 
+    private List<HistorialPedidoDTO> ejecutarConsultaListaHistorialPedidos(String sql, Object... parametros) {
+        try {
+            log.info("Ejecutando consulta: {}", sql);
+            return jdbcTemplate.query(sql, historialPedidoRowMapper, parametros);
+        } catch (EmptyResultDataAccessException e) {
+            log.error("Error al ejecutar la consulta: {}", e.getMessage());
+            throw new RecursoNoEncontradoException("HistorialPedidos", "filtro aplicado", null);
+        }
+    }
+
     @Override
     public List<HistorialPedidoDTO> obtenerHistorialPedidoPorUsuario(int pagina, long idUsuario) {
-        int limit = 10;
-        int offset = (pagina - 1) * limit;
-
+        int offset = (pagina - 1) * 10;
         String sql = """
-                    SELECT hp.*
-                    FROM historial_pedido hp
-                    JOIN pedido p ON hp.id_pedido = p.id
-                    WHERE p.id_usuario = ?
-                    ORDER BY hp.fecha_cambio DESC
-                    LIMIT ? OFFSET ?
+                SELECT h.*
+                FROM historial_pedido h
+                JOIN pedido p ON h.id_pedido = p.id_pedido
+                WHERE p.id_usuario = ?
+                LIMIT 10 OFFSET ?
                 """;
+        ;
 
-        return jdbcTemplate.query(sql, historialPedidoRowMapper, idUsuario, limit, offset);
+        return ejecutarConsultaListaHistorialPedidos(sql, idUsuario, offset);
     }
 
     @Override
     public List<HistorialPedidoDTO> obtenerHistorialPedidoPorPedido(int pagina, long idPedido) {
-        int limit = 10;
-        int offset = (pagina - 1) * limit;
-
-        String sql = """
-                    SELECT * FROM historial_pedido
-                    WHERE id_pedido = ?
-                    ORDER BY fecha_cambio DESC
-                    LIMIT ? OFFSET ?
-                """;
-
-        return jdbcTemplate.query(sql, historialPedidoRowMapper, idPedido, limit, offset);
+        int offset = (pagina - 1) * 10;
+        return ejecutarConsultaListaHistorialPedidos(
+                "SELECT * FROM historial_pedido WHERE id_pedido = ? ORDER BY id LIMIT 10 OFFSET ?", idPedido, offset);
     }
 
     @Override
     public HistorialPedidoDTO obtenerHistorialPedidoPorId(long id) {
-        String sql = "SELECT * FROM historial_pedido WHERE id = ?";
         try {
-            return jdbcTemplate.queryForObject(sql, historialPedidoRowMapper, id);
+            log.info("obteniendo historial pedido por ID: {}", id);
+            return jdbcTemplate.queryForObject("SELECT * FROM historial_pedido WHERE id = ?", historialPedidoRowMapper,
+                    id);
         } catch (EmptyResultDataAccessException e) {
-            throw new RecursoNoEncontradoException("Historial del pedido", "id", id);
+            log.error("Error al ejecutar la consulta: {}", e.getMessage());
+            throw new RecursoNoEncontradoException("HistorialPedidos", "filtro aplicado", null);
         }
     }
 
     @Override
-    public HistorialPedidoDTO crearHistorialPedido(CreateHistorialPedidoDTO dto) {
-        String sql = """
-                    INSERT INTO historial_pedido (id_pedido, estado_anterior, estado_nuevo, fecha_cambio, comentario)
-                    VALUES (?, ?, ?, ?, ?)
-                    RETURNING id
-                """;
+    public HistorialPedidoDTO crearHistorialPedido(CreateHistorialPedidoDTO historialPedidoDTO) {
 
+        Map<String, Object> fields = new LinkedHashMap<>();
+
+        fields.put("id_pedido", historialPedidoDTO.getIdPedido());
+        fields.put("estado_anterior", historialPedidoDTO.getEstadoAnterior());
+        fields.put("estado_nuevo", historialPedidoDTO.getEstadoNuevo());
+        fields.put("fecha_cambio", Timestamp.valueOf(historialPedidoDTO.getFechaCambio()));
+        fields.put("comentario", historialPedidoDTO.getComentario());
+
+        String sql = DynamicSqlBuilder.buildInsertSql("historial_pedido", fields);
         KeyHolder keyHolder = new GeneratedKeyHolder();
+
+        log.info("Creando historial pedido con datos: {}", fields);
 
         jdbcTemplate.update(con -> {
             PreparedStatement ps = con.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
-            ps.setLong(1, dto.getIdPedido());
-            ps.setString(2, dto.getEstadoAnterior());
-            ps.setString(3, dto.getEstadoNuevo());
-            ps.setTimestamp(4, Timestamp.valueOf(dto.getFechaCambio()));
-            ps.setString(5, dto.getComentario());
+            int i = 1;
+            for (Object value : fields.values()) {
+                ps.setObject(i++, value);
+            }
             return ps;
         }, keyHolder);
 
         Number key = keyHolder.getKey();
-        
         if (key == null) {
-            throw new RuntimeException("Error al crear el historial del pedido");
+            log.error("Error al crear el historial pedido, clave generada es nula");
+            throw new RecursoNoEncontradoException("HistorialPedidos", "filtro aplicado", null);
         }
-        
         return obtenerHistorialPedidoPorId(key.longValue());
+
     }
 
     @Override
-    public void borrarHistorialPedido(long id) {
-        String sql = "DELETE FROM historial_pedido WHERE id = ?";
-        int rows = jdbcTemplate.update(sql, id);
-        if (rows == 0) {
-            throw new RecursoNoEncontradoException("Historial del pedido", "id", id);
+    public void borrarHistorialPedido(long id){
+        if (!existeHistorialPedido(id)) {
+            throw new RecursoNoEncontradoException("HistorialPedidos", "filtro aplicado", null);
         }
+        String sql = DynamicSqlBuilder.buildDeleteSql("historial_pedido", "id = ?");
+        jdbcTemplate.update(sql, id);
     }
 
     @Override
-    public boolean existeHistorialPedido(long id) {
-        String sql = "SELECT COUNT(*) FROM historial_pedido WHERE id = ?";
+    public boolean existeHistorialPedido(long id){
+        String sql = DynamicSqlBuilder.buildCountSql("historial_pedido", "id = ?");
         Integer count = jdbcTemplate.queryForObject(sql, Integer.class, id);
         return count != null && count > 0;
     }

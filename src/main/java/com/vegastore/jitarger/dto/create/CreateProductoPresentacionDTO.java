@@ -1,5 +1,7 @@
 package com.vegastore.jitarger.dto.create;
 
+import java.math.BigDecimal;
+
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
@@ -28,6 +30,13 @@ public class CreateProductoPresentacionDTO {
 
     @Positive(message = "El equivalencia de la presentación del producto no puede ser negativo")
     @Schema(description = "Equivalencia de la presentación del producto en referencia a la unidad de medida base del lote", example = "12")
-    private int equivalencia;
+    private BigDecimal equivalencia;
+
+    @Positive(message = "El precio de la presentación del producto no puede ser negativo")
+    @Schema(description = "Precio de la presentación del producto", example = "12.50")
+    private BigDecimal precio;
+
+    @Schema(description = "Indica si la presentación del producto esta disponible", example = "true")
+    private boolean disponible;
     
 }

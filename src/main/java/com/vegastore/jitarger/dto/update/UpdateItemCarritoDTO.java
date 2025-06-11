@@ -1,9 +1,6 @@
 package com.vegastore.jitarger.dto.update;
 
 import java.math.BigDecimal;
-import java.time.LocalDateTime;
-
-import com.fasterxml.jackson.annotation.JsonFormat;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotBlank;
@@ -45,6 +42,6 @@ public class UpdateItemCarritoDTO {
 
     @NotBlank(message = "El estado del item del carrito no puede estar en blanco")
     @Schema(description = "Estado del item del carrito", example = "true")
-    private boolean activo;
+    private Boolean activo;
     
 }

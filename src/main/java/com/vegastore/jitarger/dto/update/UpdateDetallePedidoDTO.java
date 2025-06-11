@@ -21,12 +21,12 @@ public class UpdateDetallePedidoDTO {
     @Positive(message = "El id del producto_presentacion no puede ser negativo")
     @NotNull(message = "El id del producto_presentacion no puede ser nulo")
     @Schema(description = "Identificador del producto_presentacion", example = "1")
-    private long idProductoPresentacion;
+    private Long idProductoPresentacion;
 
     @Positive(message = "El id del lote no puede ser negativo")
     @NotNull(message = "El id del lote no puede ser nulo")
     @Schema(description = "Identificador del lote", example = "1")
-    private long idLote;
+    private Long idLote;
 
     @Positive(message = "La cantidad del detalle del pedido no puede ser negativa")
     @Schema(description = "Cantidad del detalle del pedido", example = "3.99")

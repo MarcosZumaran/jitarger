@@ -60,10 +60,6 @@ public class LoteModel {
     @Schema(description = "Costo del lote")
     private BigDecimal costo;
 
-    @Column(name = "precio", precision = 10, scale = 2)
-    @Schema(description = "Precio de venta del lote")
-    private BigDecimal precio;
-
     @Column(name = "cantidad_inicial", precision = 10, scale = 3)
     @Schema(description = "Cantidad del lote")
     private BigDecimal cantidadInicial;
@@ -87,13 +83,12 @@ public class LoteModel {
     private List<DetallePedidoModel> detalles;
 
     // Constructor personalizado para la creación de objetos de la tabla lote
-    public LoteModel(ProductoModel producto, ProveedorModel proveedor, String unidadMedidaBase, String unidadMedidaAbreviatura, BigDecimal costo, BigDecimal precio, BigDecimal cantidadInicial) {
+    public LoteModel(ProductoModel producto, ProveedorModel proveedor, String unidadMedidaBase, String unidadMedidaAbreviatura, BigDecimal costo, BigDecimal cantidadInicial) {
         this.producto = producto;
         this.proveedor = proveedor;
         this.unidadMedidaBase = unidadMedidaBase;
         this.unidadMedidaAbreviatura = unidadMedidaAbreviatura;
         this.costo = costo;
-        this.precio = precio;
         this.cantidadInicial = cantidadInicial;
         this.stock = cantidadInicial; // Inicialmente el stock es igual a la cantidad inicial
         this.fechaRegistro = LocalDateTime.now();

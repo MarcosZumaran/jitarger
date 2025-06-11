@@ -37,7 +37,6 @@ public class LoteServiceImpl implements LoteService {
             .unidadMedidaBase(rs.getString("unidad_medida_base"))
             .unidadMedidaAbreviatura(rs.getString("unidad_medida_abreviatura"))
             .costo(rs.getBigDecimal("costo"))
-            .precio(rs.getBigDecimal("precio"))
             .cantidadInicial(rs.getBigDecimal("cantidad_inicial"))
             .stock(rs.getBigDecimal("stock"))
             .fechaRegistro(rs.getTimestamp("fecha_registro").toLocalDateTime())
@@ -106,7 +105,6 @@ public class LoteServiceImpl implements LoteService {
                 unidad_medida_base,
                 unidad_medida_abreviatura,
                 costo,
-                precio,
                 cantidad_inicial,
                 stock,
                 fecha_registro,
@@ -127,7 +125,6 @@ public class LoteServiceImpl implements LoteService {
                 ps.setString(3, loteDTO.getUnidadMedidaBase());
                 ps.setString(4, loteDTO.getUnidadMedidaAbreviatura());
                 ps.setBigDecimal(5, loteDTO.getCosto());
-                ps.setBigDecimal(6, loteDTO.getPrecio());
                 ps.setBigDecimal(7, loteDTO.getCantidadInicial());
                 ps.setBigDecimal(8, loteDTO.getStock());
                 ps.setTimestamp(9, Timestamp.valueOf(fechaAcual));
@@ -166,7 +163,6 @@ public class LoteServiceImpl implements LoteService {
                         unidad_medida_base = ?,
                         unidad_medida_abreviatura = ?,
                         costo = ?,
-                        precio = ?,
                         cantidad_inicial = ?,
                         stock = ?,
                         fecha_actualizacion = ?
@@ -177,7 +173,6 @@ public class LoteServiceImpl implements LoteService {
                     loteDTO.getUnidadMedidaBase(),
                     loteDTO.getUnidadMedidaAbreviatura(),
                     loteDTO.getCosto(),
-                    loteDTO.getPrecio(),
                     loteDTO.getCantidadInicial(),
                     loteDTO.getStock(),
                     Timestamp.valueOf(fechaAcual),

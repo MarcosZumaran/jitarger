@@ -86,5 +86,9 @@ public class ProductoDTO {
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     @Schema(description = "Fecha de creación del producto", example = "2023-05-01T00:00:00")
     private LocalDateTime fechaRegistro;
+
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    @Schema(description = "Fecha de actualización del producto", example = "2023-05-01T00:00:00")
+    private LocalDateTime fechaActualizacion;
     
 }

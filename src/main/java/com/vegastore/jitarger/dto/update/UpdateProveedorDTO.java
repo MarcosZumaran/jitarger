@@ -43,4 +43,7 @@ public class UpdateProveedorDTO {
     @Schema(description = "Correo electrónico del proveedor", example = "proveedor@gmail.com")
     private String correo;
 
+    @Schema(description = "Estado del proveedor", example = "true")
+    private Boolean activo;
+
 }

@@ -44,55 +44,42 @@ public class LoteServiceImpl implements LoteService {
             .fechaActualizacion(rs.getTimestamp("fecha_actualizacion").toLocalDateTime())
             .build();
 
+    private List<LoteDTO> ejecutarConsultaListaLotes(String sql, Object... parametros) {
+        try {
+            return jdbcTemplate.query(sql, loteRowMapper, parametros);
+        } catch (EmptyResultDataAccessException e) {
+            log.warn("No se encontraron resultados para la consulta: {}", e.getMessage());
+            throw new RecursoNoEncontradoException("Lotes", "filtro aplicado", null);
+        }
+    }
+
     @Override
     public List<LoteDTO> obtenerTodosLosLotes() {
-        String sql = "SELECT * FROM lote ORDER BY id";
-        try {
-            log.info("Obteniendo todos los lotes");
-            return jdbcTemplate.query(sql, loteRowMapper);
-        } catch (EmptyResultDataAccessException e) {
-            log.warn("No se encontraron lotes: {}", e.getMessage());
-            throw new RecursoNoEncontradoException("Lotes", "todos", null);
-        }
+        log.info("Obteniendo todos los lotes");
+        return ejecutarConsultaListaLotes("SELECT * FROM lote ORDER BY id");
     }
 
     @Override
     public List<LoteDTO> obtenerLotes(int pagina) {
-        int offset = (pagina - 1) * 10; // Tamaño de página de 10
-        String sql = "SELECT * FROM lote ORDER BY id LIMIT ? OFFSET ?";
-        try {
-            log.info("Obteniendo lotes de la página {}", pagina);
-            return jdbcTemplate.query(sql, loteRowMapper, 10, offset);
-        } catch (EmptyResultDataAccessException e) {
-            log.warn("No se encontraron lotes en la página {}: {}", pagina, e.getMessage());
-            throw new RecursoNoEncontradoException("Lotes", "página", pagina);
-        }
+        int offset = (pagina - 1) * 10;
+        log.info("Obteniendo lotes de la página {}", pagina);
+        return ejecutarConsultaListaLotes("SELECT * FROM lote ORDER BY id LIMIT ? OFFSET ?", 10, offset);
     }
 
     @Override
     public List<LoteDTO> obtenerLotesPorProducto(int pag, long idProducto) {
-        int offset = (pag - 1) * 10; // Tamaño de página de 10
-        String sql = "SELECT * FROM lote WHERE id_producto = ? ORDER BY id LIMIT ? OFFSET ?";
-        try {
-            log.info("Obteniendo lotes para el producto con ID {}", idProducto);
-            return jdbcTemplate.query(sql, loteRowMapper, idProducto, 10, offset);
-        } catch (EmptyResultDataAccessException e) {
-            log.warn("No se encontraron lotes para el producto con ID {}: {}", idProducto, e.getMessage());
-            throw new RecursoNoEncontradoException("Lotes", "producto", idProducto);
-        }
+        int offset = (pag - 1) * 10;
+        log.info("Obteniendo lotes para producto ID {}", idProducto);
+        return ejecutarConsultaListaLotes("SELECT * FROM lote WHERE id_producto = ? ORDER BY id LIMIT ? OFFSET ?",
+                idProducto, 10, offset);
     }
 
     @Override
     public List<LoteDTO> obtenerLotesPorProveedor(int pag, long idProveedor) {
-        int offset = (pag - 1) * 10; // Tamaño de página de 10
-        String sql = "SELECT * FROM lote WHERE id_proveedor = ? ORDER BY id LIMIT ? OFFSET ?";
-        try {
-            log.info("Obteniendo lotes para el proveedor con ID {}", idProveedor);
-            return jdbcTemplate.query(sql, loteRowMapper, idProveedor, 10, offset);
-        } catch (EmptyResultDataAccessException e) {
-            log.warn("No se encontraron lotes para el proveedor con ID {}: {}", idProveedor, e.getMessage());
-            throw new RecursoNoEncontradoException("Lotes", "proveedor", idProveedor);
-        }
+        int offset = (pag - 1) * 10;
+        log.info("Obteniendo lotes para proveedor ID {}", idProveedor);
+        return ejecutarConsultaListaLotes("SELECT * FROM lote WHERE id_proveedor = ? ORDER BY id LIMIT ? OFFSET ?",
+                idProveedor, 10, offset);
     }
 
     @Override

@@ -43,7 +43,7 @@ public class LoteDTO {
     private String unidadMedidaBase;
 
     @NotBlank(message = "La abreviatura de la unidad de medida del lote no puede estar en blanco")
-    @Length(min = 1, max = 6, message = "La abreviatura de la unidad de medida del lote debe tener entre 1 y 20 caracteres")
+    @Length(min = 1, max = 6, message = "La abreviatura de la unidad de medida del lote debe tener entre 1 y 6 caracteres")
     @Schema(description = "Abreviatura de la unidad de medida del lote", example = "DOC")
     private String unidadMedidaAbreviatura;
 

@@ -12,32 +12,31 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-@AllArgsConstructor
-@NoArgsConstructor
 @Data
 @Builder
+@AllArgsConstructor
+@NoArgsConstructor
 public class CarritoDTO {
 
-    @Positive(message = "El id del carrito no puede ser negativo")
-    @Schema(description = "Identificador del carrito", example = "1")
+    @Positive(message = "El id del carrito debe ser un número positivo")
+    @Schema(description = "Identificador único del carrito", example = "1")
     private long id;
 
-    @Positive(message = "El id del usuario no puede ser negativo")
     @NotNull(message = "El id del usuario no puede ser nulo")
-    @Schema(description = "Identificador del usuario", example = "1")
+    @Positive(message = "El id del usuario debe ser un número positivo")
+    @Schema(description = "Identificador del usuario asociado al carrito", example = "1")
     private long idUsuario;
 
-    @NotNull(message = "La fecha de creación del carrito no puede estar en blanco")
-    @Schema(description = "Fecha de creación del carrito")
+    @NotNull(message = "La fecha de creación no puede ser nula")
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
+    @Schema(description = "Fecha de creación del carrito", example = "2025-06-10 15:30:00")
     private LocalDateTime fechaCreacion;
 
-    @Schema(description = "Fecha del último cambio de estado del carrito")
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
+    @Schema(description = "Fecha del último cambio de estado del carrito", example = "2025-06-11 10:15:00")
     private LocalDateTime fechaCambioEstado;
 
-    @NotNull(message = "El estado del carrito no puede estar en blanco")
-    @Schema(description = "Estado del carrito", example = "ACTIVO")
+    @NotNull(message = "El estado del carrito no puede ser nulo")
+    @Schema(description = "Estado actual del carrito", example = "ACTIVO")
     private String estado;
-
 }

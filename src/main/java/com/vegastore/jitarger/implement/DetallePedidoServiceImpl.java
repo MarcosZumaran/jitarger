@@ -46,6 +46,14 @@ public class DetallePedidoServiceImpl implements DetallePedidoService {
             .unidadmedidaPresentacion(rs.getString("unidad_medida_presentacion"))
             .build();
 
+
+    
+    @Override
+    public List<DetallePedidoDTO> obtenerDetallePedidos(){
+        String sql = "SELECT * FROM detalle_pedido";
+        return jdbcTemplate.query(sql, detallePedidoRowMapper);
+    }
+
     @Override
     public List<DetallePedidoDTO> obtenerDetallesPedidoPorPedido(int pagina,long pedidoId){
         int offset = (pagina - 1) * 10;

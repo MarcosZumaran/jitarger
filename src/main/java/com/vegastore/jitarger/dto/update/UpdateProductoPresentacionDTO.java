@@ -6,7 +6,6 @@ import java.time.LocalDateTime;
 import com.fasterxml.jackson.annotation.JsonFormat;
 
 import io.swagger.v3.oas.annotations.media.Schema;
-import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -19,11 +18,9 @@ import lombok.NoArgsConstructor;
 @Data
 public class UpdateProductoPresentacionDTO {
 
-    @NotNull(message = "La unidad de medida de la presentación del producto no puede ser nula")
     @Schema(description = "Unidad de medida de la presentación del producto", example = "docena")
     private String unidadMedida;
 
-    @NotNull(message = "La abreviatura de la unidad de medida de la presentación del producto no puede ser nula")
     @Schema(description = "Abreviatura de la unidad de medida de la presentación del producto", example = "doc")
     private String unidadAbreviatura;   
 

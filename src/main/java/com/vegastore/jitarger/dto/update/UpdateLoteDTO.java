@@ -5,7 +5,6 @@ import java.math.BigDecimal;
 import org.hibernate.validator.constraints.Length;
 
 import io.swagger.v3.oas.annotations.media.Schema;
-import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -18,12 +17,10 @@ import lombok.NoArgsConstructor;
 @Data
 public class UpdateLoteDTO {
 
-    @NotNull(message = "La unidad de medida del lote no puede ser nula")
     @Length(min = 3, max = 20, message = "La unidad de medida del lote debe tener entre 3 y 20 caracteres")
     @Schema(description = "Unidad de medida del lote", example = "DOCENAS")
     private String unidadMedidaBase;
 
-    @NotNull(message = "La abreviatura de la unidad de medida del lote no puede ser nula")
     @Length(min = 1, max = 6, message = "La abreviatura de la unidad de medida del lote debe tener entre 1 y 20 caracteres")
     @Schema(description = "Abreviatura de la unidad de medida del lote", example = "DOC")
     private String unidadMedidaAbreviatura;

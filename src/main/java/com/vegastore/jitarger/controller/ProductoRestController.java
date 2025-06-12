@@ -19,7 +19,8 @@ import com.vegastore.jitarger.dto.update.UpdateProductoDTO;
 import com.vegastore.jitarger.responce.ApiResponse;
 import com.vegastore.jitarger.service.ProductoService;
 
-import io.swagger.v3.oas.annotations.parameters.RequestBody;
+import org.springframework.web.bind.annotation.RequestBody;
+
 
 @RestController
 @RequestMapping("/api/producto")

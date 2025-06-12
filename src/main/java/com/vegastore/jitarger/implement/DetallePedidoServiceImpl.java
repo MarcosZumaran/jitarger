@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Stream;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -127,12 +128,11 @@ public class DetallePedidoServiceImpl implements DetallePedidoService {
 
         String sql = DynamicSqlBuilder.buildUpdateSql("detalle_pedido", fields, "id = ?");
 
-        List<Object> parametros = new ArrayList<>();
-        parametros.add(id);
+        Object[] params = Stream.concat(fields.values().stream(), Stream.of(id)).toArray();
 
         log.info("Actualizando detalle pedido con datos: {}", fields);
 
-        jdbcTemplate.update(sql, parametros.toArray());
+        jdbcTemplate.update(sql, params);
 
     }
 

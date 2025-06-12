@@ -18,8 +18,8 @@ import com.vegastore.jitarger.dto.create.CreateProductoImagenDTO;
 import com.vegastore.jitarger.dto.update.UpdateProductoImagenDTO;
 import com.vegastore.jitarger.responce.ApiResponse;
 import com.vegastore.jitarger.service.ProductoImagenService;
+import org.springframework.web.bind.annotation.RequestBody;
 
-import io.swagger.v3.oas.annotations.parameters.RequestBody;
 
 @RestController
 @RequestMapping("/api/producto-imagen")

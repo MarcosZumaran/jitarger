@@ -4,7 +4,10 @@ import java.sql.PreparedStatement;
 import java.sql.Statement;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Stream;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -21,6 +24,7 @@ import com.vegastore.jitarger.dto.create.CreateLoteDTO;
 import com.vegastore.jitarger.dto.update.UpdateLoteDTO;
 import com.vegastore.jitarger.exception.RecursoNoEncontradoException;
 import com.vegastore.jitarger.service.LoteService;
+import com.vegastore.jitarger.util.DynamicSqlBuilder;
 
 @Service
 public class LoteServiceImpl implements LoteService {
@@ -94,96 +98,83 @@ public class LoteServiceImpl implements LoteService {
     }
 
     @Override
-    public LoteDTO crearLote(CreateLoteDTO loteDTO) {
+    public LoteDTO crearLote(CreateLoteDTO createLoteDTO) {
 
-        final LocalDateTime fechaAcual = LocalDateTime.now();
+        LocalDateTime fechaActual = LocalDateTime.now();
 
-        String sql = """
-                INSERT INTO lote (
-                id_producto,
-                id_proveedor,
-                unidad_medida_base,
-                unidad_medida_abreviatura,
-                costo,
-                cantidad_inicial,
-                stock,
-                fecha_registro,
-                fecha_actualizacion
-                )
-                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-                """;
-        ;
+        Map<String, Object> fields = new HashMap<>();
+        fields.put("id_producto", createLoteDTO.getIdProducto());
+        fields.put("id_proveedor", createLoteDTO.getIdProveedor());
+        fields.put("unidad_medida_base", createLoteDTO.getUnidadMedidaBase());
+        fields.put("unidad_medida_abreviatura", createLoteDTO.getUnidadMedidaAbreviatura());
+        fields.put("costo", createLoteDTO.getCosto());
+        fields.put("cantidad_inicial", createLoteDTO.getCantidadInicial());
+        fields.put("stock", createLoteDTO.getStock());
+        fields.put("fecha_registro", Timestamp.valueOf(fechaActual));
+        fields.put("fecha_actualizacion", Timestamp.valueOf(fechaActual));
 
-        log.info("Creando lote con datos: {}", loteDTO);
+        String sql = DynamicSqlBuilder.buildInsertSql("lote", fields);
 
-        try {
-            KeyHolder keyHolder = new GeneratedKeyHolder();
-            jdbcTemplate.update(connection -> {
-                PreparedStatement ps = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
-                ps.setLong(1, loteDTO.getIdProducto());
-                ps.setLong(2, loteDTO.getIdProveedor());
-                ps.setString(3, loteDTO.getUnidadMedidaBase());
-                ps.setString(4, loteDTO.getUnidadMedidaAbreviatura());
-                ps.setBigDecimal(5, loteDTO.getCosto());
-                ps.setBigDecimal(7, loteDTO.getCantidadInicial());
-                ps.setBigDecimal(8, loteDTO.getStock());
-                ps.setTimestamp(9, Timestamp.valueOf(fechaAcual));
-                ps.setTimestamp(10, Timestamp.valueOf(fechaAcual));
-                return ps;
-            }, keyHolder);
+        KeyHolder keyHolder = new GeneratedKeyHolder();
 
-            Number generatedId = keyHolder.getKey();
-            if (generatedId == null) {
-                throw new RuntimeException("Error al crear el lote");
+        log.info("Creando lote con datos: {}", fields);
+
+        jdbcTemplate.update(con -> {
+            PreparedStatement ps = con.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
+            int i = 1;
+            for (Object value : fields.values()) {
+                ps.setObject(i++, value);
             }
+            return ps;
+        }, keyHolder);
 
-            log.info("Lote creado con ID: {}", generatedId.longValue());
-
-            return obtenerLotePorId(generatedId.longValue());
-        } catch (Exception e) {
-            log.error("Error al crear el lote: {}", e.getMessage());
-            throw new RuntimeException("Error al crear el lote: " + e.getMessage(), e);
+        Number key = keyHolder.getKey();
+        if (key == null) {
+            log.error("Error al crear el lote, clave generada es nula");
+            throw new RecursoNoEncontradoException("Lotes", "filtro aplicado", null);
         }
+
+        return obtenerLotePorId(key.longValue());
+
     }
 
     @Override
     public void actualizarLote(long id, UpdateLoteDTO loteDTO) {
-
         if (!existeLote(id)) {
-            log.info("Lote con ID {} no encontrado para actualización", id);
             throw new RecursoNoEncontradoException("Lote", "id", id);
         }
-
-        final LocalDateTime fechaAcual = LocalDateTime.now();
-
-        try {
-            String sql = """
-                    UPDATE lote
-                    SET
-                        unidad_medida_base = ?,
-                        unidad_medida_abreviatura = ?,
-                        costo = ?,
-                        cantidad_inicial = ?,
-                        stock = ?,
-                        fecha_actualizacion = ?
-                    WHERE id = ?
-                    """;
-
-            jdbcTemplate.update(sql,
-                    loteDTO.getUnidadMedidaBase(),
-                    loteDTO.getUnidadMedidaAbreviatura(),
-                    loteDTO.getCosto(),
-                    loteDTO.getCantidadInicial(),
-                    loteDTO.getStock(),
-                    Timestamp.valueOf(fechaAcual),
-                    id);
-
-            log.info("Lote con ID {} actualizado correctamente", id);
-
-        } catch (Exception e) {
-            log.error("Error al actualizar el lote: {}", e.getMessage());
-            throw new RuntimeException("Error al actualizar el lote: " + e.getMessage(), e);
+        
+        Map<String, Object> fields = new HashMap<>();
+        if (loteDTO.getUnidadMedidaBase() != null) {
+            fields.put("unidad_medida_base", loteDTO.getUnidadMedidaBase());
         }
+        if (loteDTO.getUnidadMedidaAbreviatura() != null) {
+            fields.put("unidad_medida_abreviatura", loteDTO.getUnidadMedidaAbreviatura());
+        }
+        if (loteDTO.getCosto() != null) {
+            fields.put("costo", loteDTO.getCosto());
+        }
+        if (loteDTO.getCantidadInicial() != null) {
+            fields.put("cantidad_inicial", loteDTO.getCantidadInicial());
+        }
+        if (loteDTO.getStock() != null) {
+            fields.put("stock", loteDTO.getStock());
+        }
+        if (fields.isEmpty()) {
+            log.error("No se proporcionaron campos para actualizar el lote");
+            return;
+        }
+
+        fields.put("fecha_actualizacion", Timestamp.valueOf(LocalDateTime.now()));
+
+        String sql = DynamicSqlBuilder.buildUpdateSql("lote", fields, "id = ?");
+
+        Object[] params = Stream.concat(fields.values().stream(), Stream.of(id)).toArray();
+
+        log.info("Actualizando lote con ID {} con datos: {}", id, fields);
+
+        jdbcTemplate.update(sql, params);
+
     }
 
     @Override
@@ -191,33 +182,16 @@ public class LoteServiceImpl implements LoteService {
         if (!existeLote(id)) {
             throw new RecursoNoEncontradoException("Lote", "id", id);
         }
-        try {
-            String sql = "DELETE FROM lote WHERE id = ?";
-            jdbcTemplate.update(sql, id);
-            log.info("Lote con ID {} eliminado correctamente", id);
-        } catch (Exception e) {
-            log.error("Error al eliminar el lote: {}", e.getMessage());
-            throw new RuntimeException("Error al eliminar el lote: " + e.getMessage(), e);
-        }
+        String sql = DynamicSqlBuilder.buildDeleteSql("lote", "id = ?");
+        log.info("Eliminando lote con ID {}", id);
+        jdbcTemplate.update(sql, id);
     }
 
     @Override
     public boolean existeLote(long id) {
-        String sql = "SELECT COUNT(id) FROM lote WHERE id = ?";
-        try {
-            log.info("Verificando existencia del lote con ID {}", id);
-            Integer count = jdbcTemplate.queryForObject(sql, Integer.class, id);
-
-            if (count == null || count == 0) {
-                log.warn("El lote con ID {} no existe", id);
-                return false;
-            }
-
-            log.info("El lote con ID {} existe", id);
-            return true;
-        } catch (Exception e) {
-            log.error("Error al verificar la existencia del lote con ID {}: {}", id, e.getMessage());
-            throw new RuntimeException("Error al verificar la existencia del lote: " + e.getMessage(), e);
-        }
+        String sql = DynamicSqlBuilder.buildCountSql("lote", "id = ?");
+        Integer count = jdbcTemplate.queryForObject(sql, Integer.class, id);
+        return count != null && count > 0;
     }
+    
 }

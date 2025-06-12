@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Stream;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -149,12 +150,11 @@ public class ItemCarritoServiceImpl implements ItemCarritoService {
 
         String sql = DynamicSqlBuilder.buildUpdateSql("item_carrito", fields, "id = ?");
 
-        List<Object> parametros = new ArrayList<>();
-        parametros.add(id);
+        Object[] params = Stream.concat(fields.values().stream(), Stream.of(id)).toArray();
 
         log.info("Actualizando item carrito con datos: {}", fields);
 
-        jdbcTemplate.update(sql, parametros.toArray());
+        jdbcTemplate.update(sql, params);
 
     }
 

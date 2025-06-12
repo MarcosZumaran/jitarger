@@ -7,6 +7,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.stream.Stream;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -168,12 +169,11 @@ public class ProductoImagenServiceImpl implements ProductoImagenService {
 
         String sql = DynamicSqlBuilder.buildUpdateSql("producto_imagen", fields, "id = ?");
 
-        List<Object> parametros = new ArrayList<>(fields.values());
-        parametros.add(id);
+        Object[] params = Stream.concat(fields.values().stream(), Stream.of(id)).toArray();
 
         log.info("Actualizando imagen con ID: {} con datos: {}", id, fields);
 
-        jdbcTemplate.update(sql, parametros.toArray());
+        jdbcTemplate.update(sql, params);
 
     }
 

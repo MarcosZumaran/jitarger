@@ -7,6 +7,7 @@ import java.time.LocalDateTime;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Stream;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -145,7 +146,9 @@ public class SubCategoriaServiceImpl implements SubCategoriaService {
 
         String sql = DynamicSqlBuilder.buildUpdateSql("subcategoria", fields, "id = ?");
 
-        jdbcTemplate.update(sql, id);
+        Object[] params = Stream.concat(fields.values().stream(), Stream.of(id)).toArray();
+
+        jdbcTemplate.update(sql, params);
     }
 
     @Override

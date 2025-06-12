@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Stream;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -145,12 +146,11 @@ public class ProductoPresentacionServiceImpl implements ProductoPresentacionServ
 
         String sql = DynamicSqlBuilder.buildUpdateSql("producto_presentacion", fields, "id = ?");
 
-        List<Object> parametros = new ArrayList<>(fields.values());
-        parametros.add(id);
-
         log.info("Actualizando presentacion con ID: {} con datos: {}", id, fields);
 
-        jdbcTemplate.update(sql, parametros.toArray());
+        Object[] params = Stream.concat(fields.values().stream(), Stream.of(id)).toArray();
+
+        jdbcTemplate.update(sql, params);
 
     }
 

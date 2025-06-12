@@ -70,10 +70,6 @@ public class ProveedorServiceImpl implements ProveedorService {
     public List<ProveedorDTO> obtenerProveedoresPorNombre(String nombre){
         return ejecutarConsultaListaProveedores("SELECT * FROM proveedor WHERE nombre_empresa = ?", nombre);
     }
-    @Override
-    public List<ProveedorDTO> obtenerProveedoresPorNombreParcial(String nombre){
-        return ejecutarConsultaListaProveedores("SELECT * FROM proveedor WHERE nombre_empresa LIKE ?", "%" + nombre + "%");
-    }
 
     @Override
     public List<ProveedorDTO> obtenerProveedoresPorActivo(boolean activo){
@@ -99,28 +95,6 @@ public class ProveedorServiceImpl implements ProveedorService {
         }catch (EmptyResultDataAccessException e) {
             log.error("Error al ejecutar la consulta: {}", e.getMessage());
             throw new RecursoNoEncontradoException("Proveedores", "filtro aplicado", ruc);
-        }
-    }
-
-    @Override
-    public ProveedorDTO obtenerProveedorPorRucParcial(String rucParcial){
-        try{
-            log.info("Obteniendo proveedor por RUC parcial: {}", rucParcial);
-            return jdbcTemplate.queryForObject("SELECT * FROM proveedor WHERE ruc LIKE ?", rowMapper, "%" + rucParcial + "%");
-        }catch (EmptyResultDataAccessException e) {
-            log.error("Error al ejecutar la consulta: {}", e.getMessage());
-            throw new RecursoNoEncontradoException("Proveedores", "filtro aplicado", rucParcial);
-        }
-    }
-
-    @Override
-    public ProveedorDTO obtenerProveedorPorLote(int idLote){
-        try{
-            log.info("Obteniendo proveedor por lote: {}", idLote);
-            return jdbcTemplate.queryForObject("SELECT * FROM proveedor WHERE id_lote = ?", rowMapper, idLote);
-        }catch (EmptyResultDataAccessException e) {
-            log.error("Error al ejecutar la consulta: {}", e.getMessage());
-            throw new RecursoNoEncontradoException("Proveedores", "filtro aplicado", String.valueOf(idLote));
         }
     }
 

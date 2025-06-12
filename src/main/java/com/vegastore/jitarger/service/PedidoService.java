@@ -24,20 +24,10 @@ public interface PedidoService {
 
     void actualizarPedido(long id, UpdatePedidoDTO pedidoDTO);
 
-    void actualizarEstadoPedido(long id, String nuevoEstado, String comentario);
-
-    void cancelarPedido(long id, String comentario);
-
     void borrarPedido(long id);
 
     boolean existePedido(long id);
 
     long contarPedidos();
-
-    long contarPedidosPorEstado(String estado);
-
-    long contarPedidosPorUsuario(long idUsuario);
-
-    long contarPedidosPorUsuarioYEstado(long idUsuario, String estado);
 
 }

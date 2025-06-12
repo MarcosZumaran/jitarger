@@ -51,6 +51,11 @@ public class HistorialPedidoServiceImpl implements HistorialPedidoService {
     }
 
     @Override
+    public List<HistorialPedidoDTO> obtenerHistorialPedidos() {
+        return ejecutarConsultaListaHistorialPedidos("SELECT * FROM historial_pedido ORDER BY id LIMIT 10 OFFSET ?");
+    }
+
+    @Override
     public List<HistorialPedidoDTO> obtenerHistorialPedidoPorUsuario(int pagina, long idUsuario) {
         int offset = (pagina - 1) * 10;
         String sql = """

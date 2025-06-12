@@ -201,32 +201,6 @@ public class PedidoServiceImpl implements PedidoService {
     }
 
     @Override
-    public void actualizarEstadoPedido(long id, String nuevoEstado, String comentario) {
-
-        Map<String, Object> fields = new LinkedHashMap<>();
-
-        fields.put("estado", nuevoEstado);
-        fields.put("fecha_confirmacion", Timestamp.valueOf(LocalDateTime.now()));
-
-        String sql = DynamicSqlBuilder.buildUpdateSql("pedido", fields, "id = ?");
-
-        jdbcTemplate.update(sql, nuevoEstado, Timestamp.valueOf(LocalDateTime.now()), id);
-    }
-
-    @Override
-    public void cancelarPedido(long id, String comentario) {
-
-        Map<String, Object> fields = new LinkedHashMap<>();
-
-        fields.put("cancelado", true);
-        fields.put("fecha_cancelacion", Timestamp.valueOf(LocalDateTime.now()));
-
-        String sql = DynamicSqlBuilder.buildUpdateSql("pedido", fields, "id = ?");
-
-        jdbcTemplate.update(sql, true, Timestamp.valueOf(LocalDateTime.now()), id);
-    }
-
-    @Override
     public void borrarPedido(long id) {
         String sql = DynamicSqlBuilder.buildDeleteSql("pedido", "id = ?");
         jdbcTemplate.update(sql, id);
@@ -243,45 +217,6 @@ public class PedidoServiceImpl implements PedidoService {
     public long contarPedidos() {
         String sql = DynamicSqlBuilder.buildCountSql("pedido");
         Long count = jdbcTemplate.queryForObject(sql, Long.class);
-
-        if (count == null) {
-            log.warn("El conteo de pedidos devolvió null, devolviendo 0");
-            return 0L; // la L al final indica que es un long
-        }
-
-        return count;
-    }
-
-    @Override
-    public long contarPedidosPorEstado(String estado) {
-        String sql = DynamicSqlBuilder.buildCountSql("pedido", "estado = ?");
-        Long count = jdbcTemplate.queryForObject(sql, Long.class, estado);
-
-        if (count == null) {
-            log.warn("El conteo de pedidos devolvió null, devolviendo 0");
-            return 0L; // la L al final indica que es un long
-        }
-
-        return count;
-    }
-
-    @Override
-    public long contarPedidosPorUsuario(long idUsuario) {
-        String sql = DynamicSqlBuilder.buildCountSql("pedido", "id_usuario = ?");
-        Long count = jdbcTemplate.queryForObject(sql, Long.class, idUsuario);
-
-        if (count == null) {
-            log.warn("El conteo de pedidos devolvió null, devolviendo 0");
-            return 0L; // la L al final indica que es un long
-        }
-
-        return count;
-    }
-
-    @Override
-    public long contarPedidosPorUsuarioYEstado(long idUsuario, String estado) {
-        String sql = DynamicSqlBuilder.buildCountSql("pedido", "id_usuario = ? AND estado = ?");
-        Long count = jdbcTemplate.queryForObject(sql, Long.class, idUsuario, estado);
 
         if (count == null) {
             log.warn("El conteo de pedidos devolvió null, devolviendo 0");

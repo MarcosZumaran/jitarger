@@ -6,6 +6,7 @@ import com.vegastore.jitarger.dto.base.HistorialPedidoDTO;
 import com.vegastore.jitarger.dto.create.CreateHistorialPedidoDTO;
 
 public interface HistorialPedidoService {
+    List<HistorialPedidoDTO> obtenerHistorialPedidos();
     List<HistorialPedidoDTO> obtenerHistorialPedidoPorUsuario(int pagina,long idUsuario);
     List<HistorialPedidoDTO> obtenerHistorialPedidoPorPedido(int pagina, long idPedido);
     HistorialPedidoDTO obtenerHistorialPedidoPorId(long id);

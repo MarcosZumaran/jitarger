@@ -81,21 +81,6 @@ public class SubCategoriaServiceImpl implements SubCategoriaService {
     }
 
     @Override
-    public SubCategoriaDTO obtenerSubCategoriaPorProducto(long idProducto) {
-        try {
-            String sql = "SELECT id_subcategoria FROM producto WHERE id_producto = ?";
-            Long idSubcategoria = jdbcTemplate.queryForObject(sql, Long.class, idProducto);
-
-            String sqlSubcategoria = "SELECT * FROM subcategoria WHERE id = ?";
-            return jdbcTemplate.queryForObject(sqlSubcategoria, rowMapper, idSubcategoria);
-
-        } catch (EmptyResultDataAccessException e) {
-            log.error("No se ha encontrado la subcategoría del producto con id {}", idProducto);
-            throw new RecursoNoEncontradoException("Producto", "id", idProducto);
-        }
-    }
-
-    @Override
     public SubCategoriaDTO crearSubCategoria(CreateSubCategoriaDTO subcategoriaDTO) {
 
         Map<String, Object> fields = new LinkedHashMap<>();

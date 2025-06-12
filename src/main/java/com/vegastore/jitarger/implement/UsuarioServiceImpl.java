@@ -65,11 +65,6 @@ public class UsuarioServiceImpl implements UsuarioService {
     public List<UsuarioDTO> obtenerUsuariosPorNombre(int pagina, String nombre){
         return ejecutarConsultaListaUsuarios("SELECT * FROM usuario WHERE nombre = ? LIMIT 10 OFFSET ?", nombre, pagina);
     }
-
-    @Override
-    public List<UsuarioDTO> obtenerUsuariosPorNombreParcial(int pagina, String nombreParcial){
-        return ejecutarConsultaListaUsuarios("SELECT * FROM usuario WHERE nombre LIKE ? LIMIT 10 OFFSET ?", "%" + nombreParcial + "%", pagina);
-    }
     
     @Override
     public List<UsuarioDTO> obtenerUsuariosPorRol(int pagina, String rol){
@@ -87,11 +82,6 @@ public class UsuarioServiceImpl implements UsuarioService {
     }
 
     @Override
-    public List<UsuarioDTO> obtenerTodosLosUsuarioPorNombreParcial(String nombreParcial){
-        return ejecutarConsultaListaUsuarios("SELECT * FROM usuario WHERE nombre LIKE ?", "%" + nombreParcial + "%");
-    }
-
-    @Override
     public List<UsuarioDTO> obtenerTodosLosUsuariosPorRol(String rol){
         return ejecutarConsultaListaUsuarios("SELECT * FROM usuario WHERE rol = ?", rol);
     }
@@ -101,6 +91,17 @@ public class UsuarioServiceImpl implements UsuarioService {
         try{
             log.info("Ejecutando consulta: SELECT * FROM usuario WHERE id = {}", id);            
             return jdbcTemplate.queryForObject("SELECT * FROM usuario WHERE id = ?", rowMapper, id);
+        } catch (EmptyResultDataAccessException e) {
+            log.error("Error al ejecutar la consulta: {}", e.getMessage());
+            throw new RecursoNoEncontradoException("Usuarios", "filtro aplicado", null);
+        }
+    }
+
+    @Override
+    public UsuarioDTO obtenerusuarioPorCredenciales(String correo, String clave){
+        try{
+            log.info("Ejecutando consulta: SELECT * FROM usuario WHERE correo = ? AND clave = ?", correo, clave);            
+            return jdbcTemplate.queryForObject("SELECT * FROM usuario WHERE correo = ? AND clave = ?", rowMapper, correo, clave);
         } catch (EmptyResultDataAccessException e) {
             log.error("Error al ejecutar la consulta: {}", e.getMessage());
             throw new RecursoNoEncontradoException("Usuarios", "filtro aplicado", null);
